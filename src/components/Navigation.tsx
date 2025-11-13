@@ -25,7 +25,7 @@ const Navigation = () => {
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full">
+    <header className="sticky top-0 z-50 w-full bg-background1/90 backdrop-blur-md">
       <div className="container mx-auto h-16 w-full flex gap-4 justify-between items-center">
         {/* Mobile Hamburger Menu */}
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
