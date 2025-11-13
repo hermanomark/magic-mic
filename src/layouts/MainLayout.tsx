@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 
 const MainLayout = () => {
@@ -22,24 +22,24 @@ const MainLayout = () => {
               © {new Date().getFullYear()} Magic Mic. All rights reserved.
             </p>
             <div className="flex gap-4 sm:gap-6">
-              <a
-                href="#"
+              <Link
+                to="/privacy"
                 className="text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
                 Privacy
-              </a>
-              <a
-                href="#"
+              </Link>
+              <Link
+                to="/terms"
                 className="text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
                 Terms
-              </a>
-              <a
-                href="#"
+              </Link>
+              <Link
+                to="/contact"
                 className="text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
                 Contact
-              </a>
+              </Link>
             </div>
           </div>
         </div>
