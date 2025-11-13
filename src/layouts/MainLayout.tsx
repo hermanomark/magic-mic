@@ -1,7 +1,31 @@
 import { Link, Outlet } from "react-router-dom";
 import Navigation from "@/components/Navigation";
+import { SquareArrowUp } from "lucide-react";
+import { useState, useEffect } from "react";
 
 const MainLayout = () => {
+  const [showScrollTop, setShowScrollTop] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 300) {
+        setShowScrollTop(true);
+      } else {
+        setShowScrollTop(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-background px-4">
       {/* Header - Fixed at top with backdrop blur for modern look */}
@@ -44,6 +68,14 @@ const MainLayout = () => {
           </div>
         </div>
       </footer>
+
+      {/* Scroll to Top Button */}
+      {showScrollTop && (
+        <SquareArrowUp onClick={scrollToTop}
+          size="icon"
+          className="fixed bottom-8 right-8 rounded-lg shadow-lg transition-all duration-300 hover:scale-110 z-50 p-0 h-8 w-8 cursor-pointer"
+          aria-label="Scroll to top" />
+      )}
     </div>
   );
 };
