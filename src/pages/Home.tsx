@@ -63,7 +63,7 @@ const Home = () => {
               </h1>
               <div className="relative rounded-full overflow-hidden shadow-2xl mx-auto flex w-48 h-48 md:w-64 md:h-64 border-4 border-[#005A9C]">
                 <img
-                  src="/src/assets/magic-mic-small.png"
+                  src="/magic-mic-small.png"
                   alt="Magic Mic - Baseball Card Collector"
                   className="w-auto h-auto object-cover"
                 />
