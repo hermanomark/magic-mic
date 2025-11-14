@@ -14,6 +14,7 @@ import { ModeToggle } from "./ModeToggle";
 import { Menu } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/Button";
+import Logo from "@/assets/logo-first.png";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -54,9 +55,7 @@ const Navigation = () => {
         {/* Logo - Left on desktop, center on mobile */}
         <div className="flex-1 md:flex-none md:min-w-[150px] flex justify-center md:justify-start">
           <Link to="/" className="text-2xl font-bold">
-            <span className="text-3xl md:text-5xl mb-6 text-primary pb-4" style={{ fontFamily: "'Bungee Shade', sans-serif", letterSpacing: '0.05em' }}>
-              M
-            </span>
+            <img src={Logo} alt="Logo" className="rounded-full h-11 w-11 inline" />
           </Link>
         </div>
 
