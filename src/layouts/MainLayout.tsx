@@ -40,7 +40,7 @@ const MainLayout = () => {
 
       {/* Footer - Optional, uncomment if needed */}
       <footer className="w-full bg-background">
-        <div className="container mx-auto py-6 sm:py-8">
+        <div className="container mx-auto py-6 px-4 sm:py-8">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
             <p className="text-sm text-muted-foreground text-center sm:text-left">
               © {new Date().getFullYear()} Magic Mic. All rights reserved.

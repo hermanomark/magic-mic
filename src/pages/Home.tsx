@@ -42,7 +42,7 @@ const Home = () => {
   return (
     <>
       {/* Hero Section */}
-      <section className="relative min-h-[80vh] flex items-center justify-center py-20">
+      <section className="container mx-auto overflow-hidden relative min-h-[80vh] flex items-center justify-center py-20">
         <div className="container mx-auto px-4 z-10 max-w-4xl relative">
           {/* Gradient Background Blur Effect */}
           <div className="absolute inset-0 -z-10 pointer-events-none">
@@ -97,7 +97,7 @@ const Home = () => {
       </section>
 
       {/* Featured Cards Section */}
-      <section className="py-24">
+      <section className="container mx-auto overflow-hidden py-24">
         <div className="container mx-auto px-4">
           <motion.div
             initial="initial"
@@ -171,7 +171,7 @@ const Home = () => {
       </section>
 
       {/* Collection Gallery Section */}
-      <section className="py-24">
+      <section className="container mx-auto overflow-hidden py-24">
         <div className="container mx-auto px-4">
           <motion.div
             initial="initial"
@@ -236,7 +236,7 @@ const Home = () => {
       </section>
 
       {/* TikTok CTA Section */}
-      <section className="py-24 bg-linear-to-r from-primary to-primary/80">
+      <section className="mx-auto overflow-hidden py-24 bg-linear-to-r from-primary to-primary/80">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
