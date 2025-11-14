@@ -54,7 +54,9 @@ const Navigation = () => {
         {/* Logo - Left on desktop, center on mobile */}
         <div className="flex-1 md:flex-none md:min-w-[150px] flex justify-center md:justify-start">
           <Link to="/" className="text-2xl font-bold">
-            LOGO
+            <span className="text-3xl md:text-5xl mb-6 text-primary pb-4" style={{ fontFamily: "'Bungee Shade', sans-serif", letterSpacing: '0.05em' }}>
+              M
+            </span>
           </Link>
         </div>
 

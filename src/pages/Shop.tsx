@@ -10,6 +10,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/Pagination';
+import { Button } from '@/components/ui/Button';
 
 const Shop = () => {
   const itemsPerPage = 10;
@@ -94,13 +95,13 @@ const Shop = () => {
                 <p className="text-gray-600 text-sm mb-3 grow">{item.description}</p>
                 <div className="mt-auto">
                   <p className="text-2xl font-bold text-primary mb-3">${item.price}</p>
-                  <button
+                  <Button
                     onClick={() => handleBuyClick(item.ebayLink)}
-                    className="w-full bg-primary text-white py-2 px-4 rounded-lg font-semibold hover:bg-primary/90 transition-colors duration-200 flex items-center justify-center gap-2"
+                    className="w-full bg-primary text-white py-2 px-4 rounded-lg font-semibold hover:bg-primary/90 transition-colors duration-200 flex items-center justify-center gap-2 cursor-pointer"
                   >
                     Buy on eBay
                     <ExternalLink size={16} />
-                  </button>
+                  </Button>
                 </div>
               </div>
             </Card>
