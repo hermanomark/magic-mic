@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/Pagination';
 
 const Collections = () => {
-  const itemsPerPage = 12;
+  const itemsPerPage = 10;
   const totalItems = 16; // Total number of collectible items
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -55,9 +55,9 @@ const Collections = () => {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="text-3xl font-bold mb-6 text-primary"
+        className="text-4xl font-bold mb-6 text-primary"
       >
-        Magic Mic - Collections
+        Magic Mic Collections
       </motion.h1>
       <motion.p 
         initial={{ opacity: 0, y: -10 }}
@@ -72,7 +72,7 @@ const Collections = () => {
         animate="animate"
         variants={staggerContainer}
         key={pageKey}
-        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6"
       >
         {currentItems.map((item) => (
           <motion.div 
@@ -80,9 +80,9 @@ const Collections = () => {
             variants={fadeInUp}
             className="w-full"
           >
-            <Card className='overflow-hidden transition-all duration-300 h-full rounded-xl border-primary shadow-[-8px_8px_0px_0px_var(--color-primary)] hover:shadow-[-12px_12px_0px_0px_var(--color-primary)] bg-white'>
+            <Card className='py-2 gap-2 overflow-hidden transition-all duration-300 h-full rounded-xl border-primary shadow-[-8px_8px_0px_0px_var(--color-primary)] hover:shadow-[-12px_12px_0px_0px_var(--color-primary)] bg-white'>
               <img src={item.image} alt={item.name} className="w-full h-full object-cover hover:scale-110 transition-transform duration-500" />
-              <div className="p-4">
+              <div className="px-4 py-2">
                 <h2 className="text-md font-semibold text-primary mb-2">{item.name}</h2>
                 <p className="text-gray-600 text-sm">{item.description}</p>
               </div>

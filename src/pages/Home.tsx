@@ -88,7 +88,7 @@ const Home = () => {
                   </Link>
                 </Button>
                 <Button asChild variant="outline" size="lg" className="text-lg w-full sm:w-auto">
-                  <Link to="/collection">View Collection</Link>
+                  <Link to="/collections">View Collection</Link>
                 </Button>
               </div>
             </motion.div>
@@ -139,12 +139,12 @@ const Home = () => {
                   </div>
                   <CardHeader>
                     <CardTitle className="text-2xl text-primary">{card.name}</CardTitle>
-                    <CardDescription className="text-xl font-semibold text-primary-red">
+                    <CardDescription className="text-xl font-semibold text-primary">
                       {card.price}
                     </CardDescription>
                   </CardHeader>
                   <CardFooter>
-                    <Button className="cursor-pointer w-full" variant="default">
+                    <Button className="cursor-pointer text-white w-full" variant="default">
                       Buy on Ebay
                       <ExternalLink className="ml-2 h-4 w-4" />
                     </Button>
@@ -227,7 +227,7 @@ const Home = () => {
             className="text-center"
           >
             <Button asChild size="lg" className="text-lg">
-              <Link to="/collection">
+              <Link to="/collections">
                 Explore Full Collection <ArrowRight className="ml-2" />
               </Link>
             </Button>
