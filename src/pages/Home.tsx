@@ -129,7 +129,7 @@ const Home = () => {
           >
             {featuredCards.map((card) => (
               <motion.div key={card.id} variants={fadeInUp}>
-                <Card className="overflow-hidden transition-all duration-300 h-full rounded-xl border-[#005A9C] shadow-[-8px_8px_0px_0px_#005A9C] hover:shadow-[-12px_12px_0px_0px_#005A9C] bg-white">
+                <Card className="overflow-hidden transition-all duration-300 h-full rounded-xl border-primary shadow-[-8px_8px_0px_0px_var(--color-primary)] hover:shadow-[-12px_12px_0px_0px_var(--color-primary)] bg-white">
                   <div className="aspect-3/4 overflow-hidden">
                     <img
                       src={card.image}
@@ -207,7 +207,7 @@ const Home = () => {
                 variants={fadeInUp}
 
               >
-                <Card className="overflow-hidden transition-all duration-300 h-full rounded-xl border-[#005A9C] shadow-[-8px_8px_0px_0px_#005A9C] hover:shadow-[-12px_12px_0px_0px_#005A9C] bg-white">
+                <Card className="overflow-hidden transition-all duration-300 h-full rounded-xl border-primary shadow-[-8px_8px_0px_0px_var(--color-primary)] hover:shadow-[-12px_12px_0px_0px_var(--color-primary)] bg-white">
                   <div className="overflow-hidden">
                     <img
                       src={image}

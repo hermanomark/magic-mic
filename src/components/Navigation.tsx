@@ -63,8 +63,8 @@ const Navigation = () => {
           <NavigationMenuList>
             {menuItems.map((item) => (
               <NavigationMenuItem key={item.label} className="cursor-pointer ">
-                <NavigationMenuLink asChild className="hover:bg-primary/10 dark:hover:bg-white/10">
-                  <Link to={item.to} className="text-primary hover:text-primary dark:text-white dark:hover:text-white">{item.label}</Link>
+                <NavigationMenuLink asChild className="hover:bg-primary/10">
+                  <Link to={item.to} className="text-primary hover:text-primary">{item.label}</Link>
                 </NavigationMenuLink>
               </NavigationMenuItem>
             ))}
