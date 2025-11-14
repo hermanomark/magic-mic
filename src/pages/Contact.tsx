@@ -1,13 +1,13 @@
 import { Mail, Clock, Info } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
+import { Input } from "@/components/ui/Input";
+import { Textarea } from "@/components/ui/Textarea";
+import { Label } from "@/components/ui/Label";
 import { Button } from "@/components/ui/Button";
 
 const Contact = () => {
   return (
-    <>
+    <div className="container mx-auto">
       <h1 className="text-4xl font-bold mb-4">Contact Us</h1>
       <p className="text-muted-foreground mb-8">
         Have questions or need assistance? We're here to help!
@@ -241,7 +241,7 @@ const Contact = () => {
           </Card>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

@@ -27,13 +27,13 @@ const MainLayout = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background px-4">
+    <div className="min-h-screen flex flex-col bg-background">
       {/* Header - Fixed at top with backdrop blur for modern look */}
       <Navigation />
 
       {/* Main Content Area - Flexible and responsive */}
-      <main className="flex-1 w-full">
-        <div className="container mx-auto py-4 sm:py-8 lg:py-12">
+      <main className="flex-1 w-full min-h-screen">
+        <div className="w-full mx-auto py-4 sm:py-8 lg:py-12">
           <Outlet />
         </div>
       </main>

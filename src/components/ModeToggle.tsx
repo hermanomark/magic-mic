@@ -18,7 +18,7 @@ export function ModeToggle() {
       onCheckedChange={toggleTheme}
       className={cn(
         "peer inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50",
-        isDark ? "bg-slate-700" : "bg-sky-500"
+        isDark ? "bg-slate-700" : "bg-primary"
       )}
     >
       <SwitchPrimitives.Thumb
@@ -27,7 +27,7 @@ export function ModeToggle() {
         )}
       >
         <Sun className={cn(
-          "h-3 w-3 text-amber-500 transition-all",
+          "h-3 w-3 text-primary-red transition-all",
           isDark ? "scale-0 rotate-90 opacity-0" : "scale-100 rotate-0 opacity-100"
         )} />
         <Moon className={cn(

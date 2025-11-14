@@ -1,6 +1,6 @@
 const Terms = () => {
   return (
-    <>
+    <div className="container mx-auto">
       <h1 className="text-4xl font-bold mb-6">Terms and Conditions</h1>
       <p className="text-sm text-muted-foreground mb-8">Last Updated: November 13, 2025</p>
 
@@ -256,7 +256,7 @@ const Terms = () => {
           </p>
         </section>
       </div>
-    </>
+    </div>
   );
 }
 

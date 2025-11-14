@@ -25,7 +25,7 @@ const Navigation = () => {
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-background1/90 backdrop-blur-md">
+    <header className="sticky top-0 z-50 w-full bg-background1/90 backdrop-blur-md px-4">
       <div className="container mx-auto h-16 w-full flex gap-4 justify-between items-center">
         {/* Mobile Hamburger Menu */}
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -41,7 +41,7 @@ const Navigation = () => {
                 <Link
                   key={item.label}
                   to={item.to}
-                  className="text-sm font-medium hover:text-primary transition-colors px-4 py-2 rounded-md hover:bg-accent"
+                  className="text-sm font-medium text-primary hover:text-primary transition-colors px-4 py-2 rounded-md hover:bg-accent"
                   onClick={() => setIsOpen(false)}
                 >
                   {item.label}
@@ -62,9 +62,9 @@ const Navigation = () => {
         <NavigationMenu className="hidden md:flex flex-1 justify-center">
           <NavigationMenuList>
             {menuItems.map((item) => (
-              <NavigationMenuItem key={item.label} className="cursor-pointer">
-                <NavigationMenuLink asChild>
-                  <Link to={item.to}>{item.label}</Link>
+              <NavigationMenuItem key={item.label} className="cursor-pointer ">
+                <NavigationMenuLink asChild className="hover:bg-primary/10 dark:hover:bg-white/10">
+                  <Link to={item.to} className="text-primary hover:text-primary dark:text-white dark:hover:text-white">{item.label}</Link>
                 </NavigationMenuLink>
               </NavigationMenuItem>
             ))}

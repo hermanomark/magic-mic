@@ -1,6 +1,6 @@
 const Privacy = () => {
   return (
-    <>
+    <div className="container mx-auto">
       <h1 className="text-4xl font-bold mb-6">Privacy Policy</h1>
       <p className="text-sm text-muted-foreground mb-8">Last Updated: November 13, 2025</p>
 
@@ -155,7 +155,7 @@ const Privacy = () => {
           </ul>
         </section>
       </div>
-    </>
+    </div>
   );
 }
 
