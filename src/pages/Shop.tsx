@@ -22,7 +22,7 @@ const Shop = () => {
     name: `Baseball Card ${index + 1}`,
     description: `Rare collectible card featuring legendary player`,
     price: (Math.random() * 200 + 20).toFixed(2), // Random price between $20-$220
-    image: '/src/assets/sample-baseball-card-3.avif', // Placeholder image
+    image: '/sample-baseball-card-3.avif', // Placeholder image
     ebayLink: `https://www.ebay.com/sch/i.html?_nkw=baseball+card+${index + 1}`, // Placeholder eBay link
   }));
 

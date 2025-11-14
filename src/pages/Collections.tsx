@@ -19,7 +19,7 @@ const Collections = () => {
     id: index + 1,
     name: `Collectible Item ${index + 1}`,
     description: `Description for collectible item ${index + 1}`,
-    image: '/src/assets/sample-baseball-card-1.webp', // Placeholder image
+    image: '/sample-baseball-card-1.webp', // Placeholder image
   }));
 
   const indexOfLastItem = currentPage * itemsPerPage;

@@ -22,21 +22,21 @@ const Home = () => {
 
   // Sample featured cards data
   const featuredCards = [
-    { id: 1, name: 'Mickey Mantle 1952', price: '$5,999', image: '/src/assets/sample-baseball-card-1.webp' },
-    { id: 2, name: 'Ken Griffey Jr. Rookie', price: '$1,299', image: '/src/assets/sample-baseball-card-2.avif' },
-    { id: 3, name: 'Babe Ruth 1933', price: '$8,499', image: '/src/assets/sample-baseball-card-3.webp' },
+    { id: 1, name: 'Mickey Mantle 1952', price: '$5,999', image: '/sample-baseball-card-1.webp' },
+    { id: 2, name: 'Ken Griffey Jr. Rookie', price: '$1,299', image: '/sample-baseball-card-2.avif' },
+    { id: 3, name: 'Babe Ruth 1933', price: '$8,499', image: '/sample-baseball-card-3.webp' },
   ];
 
   // Sample gallery images
   const galleryImages = [
-    '/src/assets/sample-baseball-card-1.webp',
-    '/src/assets/sample-baseball-card-2.avif',
-    '/src/assets/sample-baseball-card-3.webp',
-    '/src/assets/sample-baseball-card-1.webp',
-    '/src/assets/sample-baseball-card-2.avif',
-    '/src/assets/sample-baseball-card-3.webp',
-    '/src/assets/sample-baseball-card-1.webp',
-    '/src/assets/sample-baseball-card-2.avif',
+    '/sample-baseball-card-1.webp',
+    '/sample-baseball-card-2.avif',
+    '/sample-baseball-card-3.webp',
+    '/sample-baseball-card-1.webp',
+    '/sample-baseball-card-2.avif',
+    '/sample-baseball-card-3.webp',
+    '/sample-baseball-card-1.webp',
+    '/sample-baseball-card-2.avif',
   ];
 
   return (
