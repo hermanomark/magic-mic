@@ -7,6 +7,7 @@ const NotFound = lazy(() => import('./pages/NotFound'));
 const Privacy = lazy(() => import('./pages/Privacy'));
 const Terms = lazy(() => import('./pages/Terms'));
 const Contact = lazy(() => import('./pages/Contact'));
+const Collections = lazy(() => import('./pages/Collections'));
 
 export const appRoutes = [
   {
@@ -36,5 +37,9 @@ export const appRoutes = [
   {
     path: '/contact',
     component: Contact,
+  },
+  {
+    path: '/collections',
+    component: Collections,
   }
 ];

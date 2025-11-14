@@ -21,7 +21,7 @@ const Navigation = () => {
   const menuItems = [
     { label: "Home", to: "/" },
     { label: "Shop", to: "/shop" },
-    { label: "Videos", to: "/videos" },
+    { label: "Collections", to: "/collections" },
   ];
 
   return (
