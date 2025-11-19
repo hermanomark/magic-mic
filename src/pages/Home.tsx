@@ -22,9 +22,9 @@ const Home = () => {
 
   // Sample featured cards data
   const featuredCards = [
-    { id: 1, name: 'Mickey Mantle 1952', price: '$5,999', image: '/sample-baseball-card-1.webp' },
-    { id: 2, name: 'Ken Griffey Jr. Rookie', price: '$1,299', image: '/sample-baseball-card-2.avif' },
-    { id: 3, name: 'Babe Ruth 1933', price: '$8,499', image: '/sample-baseball-card-3.webp' },
+    { id: 1, name: 'Mickey Mantle 1952', price: '$5,999', image: '/sample-baseball-card-1.webp', ebayLink: `https://www.ebay.com/sch/i.html?_nkw=baseball+card+1` },
+    { id: 2, name: 'Ken Griffey Jr. Rookie', price: '$1,299', image: '/sample-baseball-card-2.avif', ebayLink: `https://www.ebay.com/sch/i.html?_nkw=baseball+card+2` },
+    { id: 3, name: 'Babe Ruth 1933', price: '$8,499', image: '/sample-baseball-card-3.webp', ebayLink: `https://www.ebay.com/sch/i.html?_nkw=baseball+card+3` },
   ];
 
   // Sample gallery images
@@ -38,6 +38,10 @@ const Home = () => {
     '/sample-baseball-card-1.webp',
     '/sample-baseball-card-2.avif',
   ];
+
+  const handleBuyClick = (ebayLink: string) => {
+    window.open(ebayLink, '_blank', 'noopener,noreferrer');
+  };
 
   return (
     <>
@@ -110,7 +114,7 @@ const Home = () => {
               variants={fadeInUp}
               className="text-primary text-4xl md:text-5xl font-bold mb-4"
             >
-              Featured Cards
+              Cards on Sale!
             </motion.h2>
             <motion.p
               variants={fadeInUp}
@@ -144,7 +148,7 @@ const Home = () => {
                     </CardDescription>
                   </CardHeader>
                   <CardFooter>
-                    <Button className="cursor-pointer text-white w-full" variant="default">
+                    <Button onClick={() => handleBuyClick(card.ebayLink)} className="cursor-pointer text-white w-full" variant="default">
                       Buy on Ebay
                       <ExternalLink className="ml-2 h-4 w-4" />
                     </Button>
