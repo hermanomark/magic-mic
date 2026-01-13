@@ -1,0 +1,13 @@
+{
+  "name": "magic-mic",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "npm-run-all --parallel dev:server dev:client",
+    "dev:server": "cd server && npm run dev",
+    "dev:client": "cd client && npm run dev",
+    "install:all": "npm install && cd server && npm install && cd ../client && npm install"
+  },
+  "devDependencies": {
+    "npm-run-all": "^4.1.5"
+  }
+}
