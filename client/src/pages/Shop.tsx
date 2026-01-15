@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Card } from '@/components/ui/Card';
 import { ExternalLink } from 'lucide-react';
@@ -11,24 +11,31 @@ import {
   PaginationPrevious,
 } from '@/components/ui/Pagination';
 import { Button } from '@/components/ui/Button';
+import { getAllCards } from '@/services/cards';
+
+interface Card {
+  id: number;
+  playerName: string;
+  teamName: string;
+  series: string;
+  yearReleased: number;
+  ebayUrl: string;
+  imageUrl: string;
+  stock: number;
+  price: number;
+  forSale: boolean
+  user: string;
+}
 
 const Shop = () => {
   const itemsPerPage = 10;
-  const totalItems = 4; // Total number of shop items
   const [currentPage, setCurrentPage] = useState(1);
-
-  const items = Array.from({ length: totalItems }, (_, index) => ({
-    id: index + 1,
-    name: `Baseball Card ${index + 1}`,
-    description: `Rare collectible card featuring legendary player`,
-    price: (Math.random() * 200 + 20).toFixed(2), // Random price between $20-$220
-    image: '/sample-baseball-card-3.avif', // Placeholder image
-    ebayLink: `https://www.ebay.com/sch/i.html?_nkw=baseball+card+${index + 1}`, // Placeholder eBay link
-  }));
+  const [cards, setCards] = useState<Card[]>([]);
+  const totalItems = cards.length; // Total number of shop items
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = items.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = cards.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   const handlePageChange = (page: number) => {
@@ -36,11 +43,11 @@ const Shop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleBuyClick = (ebayLink: string) => {
-    window.open(ebayLink, '_blank', 'noopener,noreferrer');
+  const handleBuyClick = (ebayUrl: string) => {
+    window.open(ebayUrl, '_blank', 'noopener,noreferrer');
   };
 
-  const pageKey = `page-${currentPage}`
+  const pageKey = `page-${currentPage}-${totalItems}`
 
   // Animation variants
   const fadeInUp = {
@@ -50,12 +57,27 @@ const Shop = () => {
   };
 
   const staggerContainer = {
+    initial: {},
     animate: {
       transition: {
         staggerChildren: 0.2
       }
     }
   };
+
+  useEffect(() => {
+    const fetchCards = async () => {
+      try {
+        const data = await getAllCards();
+
+        setCards(data.filter((card: Card) => card.forSale));
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchCards();
+  }, []);
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -82,21 +104,22 @@ const Shop = () => {
         key={pageKey}
         className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
       >
-        {currentItems.map((item) => (
+        {currentItems.map((card) => (
           <motion.div 
-            key={item.id} 
+            key={card.id} 
             variants={fadeInUp}
             className="w-full"
           >
             <Card className='py-2 gap-2 overflow-hidden transition-all duration-300 h-full rounded-xl border-primary shadow-[-8px_8px_0px_0px_var(--color-primary)] hover:shadow-[-12px_12px_0px_0px_var(--color-primary)] bg-white flex flex-col'>
-              <img src={item.image} alt={item.name} className="w-full h-full object-cover hover:scale-110 transition-transform duration-500" />
+              <img src="/sample-baseball-card-3.avif" alt={card.playerName} className="w-full h-full object-cover hover:scale-110 transition-transform duration-500" />
+
               <div className="px-4 py-2 flex flex-col grow">
-                <h2 className="text-md font-semibold text-primary mb-2">{item.name}</h2>
-                <p className="text-gray-600 text-sm mb-3 grow">{item.description}</p>
+                <h2 className="text-md font-semibold text-primary mb-2">{card.playerName}</h2>
+                <p className="text-gray-600 text-sm mb-3 grow">{card.teamName} - {card.series} ({card.yearReleased})</p>
                 <div className="mt-auto">
-                  <p className="text-2xl font-bold text-primary mb-3">${item.price}</p>
+                  <p className="text-2xl font-bold text-primary mb-3">${card.price}</p>
                   <Button
-                    onClick={() => handleBuyClick(item.ebayLink)}
+                    onClick={() => handleBuyClick(card.ebayUrl)}
                     className="w-full bg-primary text-white py-2 px-4 rounded-lg font-semibold hover:bg-primary/90 transition-colors duration-200 flex items-center justify-center gap-2 cursor-pointer"
                   >
                     Buy on eBay

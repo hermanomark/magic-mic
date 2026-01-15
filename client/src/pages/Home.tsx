@@ -3,8 +3,26 @@ import { Button } from '@/components/ui/Button';
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/Card';
 import { ArrowRight, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { getAllCards } from '@/services/cards';
+
+interface Card {
+  id: number;
+  playerName: string;
+  teamName: string;
+  series: string;
+  yearReleased: number;
+  ebayUrl: string;
+  imageUrl: string;
+  stock: number;
+  price: number;
+  forSale: boolean
+  user: string;
+}
 
 const Home = () => {
+  const [featuredCards, setFeaturedCards] = useState<Card[]>([]);
+  const [collectionCards, setCollectionCards] = useState<Card[]>([]);
   // Animation variants
   const fadeInUp = {
     initial: { opacity: 0, y: 60 },
@@ -20,28 +38,23 @@ const Home = () => {
     }
   };
 
-  // Sample featured cards data
-  const featuredCards = [
-    { id: 1, name: 'Mickey Mantle 1952', price: '$5,999', image: '/sample-baseball-card-1.webp', ebayLink: `https://www.ebay.com/sch/i.html?_nkw=baseball+card+1` },
-    { id: 2, name: 'Ken Griffey Jr. Rookie', price: '$1,299', image: '/sample-baseball-card-2.avif', ebayLink: `https://www.ebay.com/sch/i.html?_nkw=baseball+card+2` },
-    { id: 3, name: 'Babe Ruth 1933', price: '$8,499', image: '/sample-baseball-card-3.webp', ebayLink: `https://www.ebay.com/sch/i.html?_nkw=baseball+card+3` },
-  ];
-
-  // Sample gallery images
-  const galleryImages = [
-    '/sample-baseball-card-1.webp',
-    '/sample-baseball-card-2.avif',
-    '/sample-baseball-card-3.webp',
-    '/sample-baseball-card-1.webp',
-    '/sample-baseball-card-2.avif',
-    '/sample-baseball-card-3.webp',
-    '/sample-baseball-card-1.webp',
-    '/sample-baseball-card-2.avif',
-  ];
-
   const handleBuyClick = (ebayLink: string) => {
     window.open(ebayLink, '_blank', 'noopener,noreferrer');
   };
+
+  useEffect(() => {
+    const fetchFeaturedCards = async () => {
+      try {
+        const data = await getAllCards();
+        setFeaturedCards(data.filter((card: Card) => card.forSale).slice(0, 3));
+        setCollectionCards(data.filter((card: Card) => !card.forSale));
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchFeaturedCards();
+  }, []);
 
   return (
     <>
@@ -131,24 +144,25 @@ const Home = () => {
             variants={staggerContainer}
             className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12"
           >
-            {featuredCards.map((card) => (
+            {featuredCards.map((card: Card ) => (
               <motion.div key={card.id} variants={fadeInUp}>
                 <Card className="overflow-hidden transition-all duration-300 h-full rounded-xl border-primary shadow-[-8px_8px_0px_0px_var(--color-primary)] hover:shadow-[-12px_12px_0px_0px_var(--color-primary)] bg-white">
                   <div className="aspect-3/4 overflow-hidden">
                     <img
-                      src={card.image}
-                      alt={card.name}
+                      // src={card.imageUrl}
+                      src='/sample-baseball-card-3.webp'
+                      alt={card.playerName}
                       className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
                     />
                   </div>
                   <CardHeader>
-                    <CardTitle className="text-2xl text-primary">{card.name}</CardTitle>
+                    <CardTitle className="text-2xl text-primary">{card.playerName}</CardTitle>
                     <CardDescription className="text-xl font-semibold text-primary">
-                      {card.price}
+                      ${card.price}
                     </CardDescription>
                   </CardHeader>
                   <CardFooter>
-                    <Button onClick={() => handleBuyClick(card.ebayLink)} className="cursor-pointer text-white w-full" variant="default">
+                    <Button onClick={() => handleBuyClick(card.ebayUrl)} className="cursor-pointer text-white w-full" variant="default">
                       Buy on Ebay
                       <ExternalLink className="ml-2 h-4 w-4" />
                     </Button>
@@ -205,7 +219,7 @@ const Home = () => {
             variants={staggerContainer}
             className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12"
           >
-            {galleryImages.map((image, index) => (
+            {collectionCards.map((card: Card, index) => (
               <motion.div
                 key={index}
                 variants={fadeInUp}
@@ -214,7 +228,8 @@ const Home = () => {
                 <Card className="overflow-hidden transition-all duration-300 h-full rounded-xl border-primary shadow-[-8px_8px_0px_0px_var(--color-primary)] hover:shadow-[-12px_12px_0px_0px_var(--color-primary)] bg-white">
                   <div className="overflow-hidden">
                     <img
-                      src={image}
+                      // src={card.imageUrl}
+                      src={'/sample-baseball-card-1.webp'}
                       alt={`Baseball card ${index + 1}`}
                       className="w-full h-full object-cover hover:scale-110 transition-transform duration-500" />
                   </div>

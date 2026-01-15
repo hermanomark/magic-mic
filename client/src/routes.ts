@@ -8,6 +8,7 @@ const Privacy = lazy(() => import('./pages/Privacy'));
 const Terms = lazy(() => import('./pages/Terms'));
 const Contact = lazy(() => import('./pages/Contact'));
 const Collections = lazy(() => import('./pages/Collections'));
+const Authenticate = lazy(() => import('./pages/Authenticate'));
 
 export const appRoutes = [
   {
@@ -23,8 +24,8 @@ export const appRoutes = [
     component: Videos,
   },
   {
-    path: '*',
-    component: NotFound
+    path: '/login',
+    component: Authenticate,
   },
   {
     path: '/privacy',
@@ -41,5 +42,9 @@ export const appRoutes = [
   {
     path: '/collections',
     component: Collections,
-  }
+  },
+  {
+    path: '*',
+    component: NotFound
+  },
 ];

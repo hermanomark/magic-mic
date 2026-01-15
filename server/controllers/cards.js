@@ -86,11 +86,18 @@ cardsRouter.delete('/:id', middleware.userExtractor, async (req, res) => {
     return res.status(404).json({ error: 'card not found' })
   }
 
+  if (!cardToDelete.user) {
+    return res.status(401).json({ error: 'card does not belong to the user' })
+  }
+
   if (cardToDelete.user.toString() !== user._id.toString()) {
     return res.status(401).json({ error: 'only the creator can delete a card' })
   }
 
   await Card.findByIdAndDelete(req.params.id)
+  user.cards = user.cards.filter(cardId => cardId.toString() !== req.params.id)
+  await user.save()
+
   res.status(204).end()
 })
 
