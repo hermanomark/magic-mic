@@ -18,12 +18,18 @@ import Logo from "@/assets/logo-first.png";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const isAuthenticated = !!localStorage.getItem("authToken");
 
   const menuItems = [
     { label: "Home", to: "/" },
     { label: "Shop", to: "/shop" },
     { label: "Collections", to: "/collections" },
+    { label: "Admin", to: "/admin", protected: true },
   ];
+
+  const visibleMenuItems = menuItems.filter(item =>
+    !item.protected || (item.protected && isAuthenticated)
+  );
 
   return (
     <header className="sticky top-0 z-50 w-full bg-background1/90 backdrop-blur-md px-4">
@@ -38,7 +44,7 @@ const Navigation = () => {
           </SheetTrigger>
           <SheetContent side="left" className="w-[280px] sm:w-[350px]">
             <nav className="flex flex-col gap-4 mt-8">
-              {menuItems.map((item) => (
+              {visibleMenuItems.map((item) => (
                 <Link
                   key={item.label}
                   to={item.to}
@@ -62,7 +68,7 @@ const Navigation = () => {
         {/* Desktop Navigation - Centered */}
         <NavigationMenu className="hidden md:flex flex-1 justify-center">
           <NavigationMenuList>
-            {menuItems.map((item) => (
+            {visibleMenuItems.map((item) => (
               <NavigationMenuItem key={item.label} className="cursor-pointer ">
                 <NavigationMenuLink asChild className="hover:bg-primary/10">
                   <Link to={item.to} className="font-bold text-primary hover:text-primary">{item.label}</Link>

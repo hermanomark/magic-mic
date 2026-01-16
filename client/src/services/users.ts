@@ -2,7 +2,6 @@ import api from "./client";
 import { getErrorMessage } from "@/utils/errorHandler";
 
 interface User {
-  id: number;
   username: string;
   password?: string;
 }
@@ -17,19 +16,9 @@ export const registerUser = async (userData: User) => {
   }
 }
 
-export const loginUser = async (userData: User) => {
+export const getUserProfile = async (username: string) => {
   try {
-    const response = await api.post('/users/login', userData);
-    return response.data;
-  } catch (error) {
-    const errorMessage = getErrorMessage(error, 'Failed to login user.');
-    throw new Error(errorMessage);
-  }
-}
-
-export const getUserProfile = async (userId: number) => {
-  try {
-    const response = await api.get(`/users/${userId}`);
+    const response = await api.get(`/users/${username}`);
     return response.data;
   } catch (error) {
     const errorMessage = getErrorMessage(error, 'Failed to fetch user profile.');

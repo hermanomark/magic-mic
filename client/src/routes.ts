@@ -9,6 +9,7 @@ const Terms = lazy(() => import('./pages/Terms'));
 const Contact = lazy(() => import('./pages/Contact'));
 const Collections = lazy(() => import('./pages/Collections'));
 const Authenticate = lazy(() => import('./pages/Authenticate'));
+const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
 
 export const appRoutes = [
   {
@@ -42,6 +43,11 @@ export const appRoutes = [
   {
     path: '/collections',
     component: Collections,
+  },
+  {
+    path: '/admin',
+    component: AdminDashboard,
+    protected: true,
   },
   {
     path: '*',

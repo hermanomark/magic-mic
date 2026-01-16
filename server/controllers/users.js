@@ -38,4 +38,23 @@ usersRouter.get('/', async (request, response) => {
   response.json(users)
 })
 
+usersRouter.get('/:username', async (request, response) => {
+  const user = await User
+    .findOne({ username: request.params.username }).populate('cards', {
+      playerName: 1,
+      teamName: 1,
+      series: 1,
+      yearReleased: 1,
+      ebayUrl: 1,
+      imageUrl: 1,
+      stock: 1,
+      price: 1,
+      forSale: 1, })
+  if (user) {
+    response.json(user)
+  } else {
+    response.status(404).end()
+  }
+})
+
 module.exports = usersRouter

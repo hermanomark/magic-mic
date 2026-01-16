@@ -7,6 +7,7 @@ import { Spinner } from './components/ui/Spinner'
 import MainLayout from './layouts/MainLayout'
 import { ScrollToTop } from './components/ScrollToTop'
 import { AnimatePresence } from 'framer-motion'
+import { ProtectedRoute } from './components/ProtectedRoute'
 
 const App = () => {
   const location = useLocation()
@@ -18,8 +19,18 @@ const App = () => {
         <AnimatePresence mode="wait" >
           <Routes key={location.pathname} location={location}>
             <Route element={<MainLayout />}>
-              {appRoutes.map(({ path, component: Component }) => (
-                <Route key={path} path={path} element={<Component />} />
+              {appRoutes.map(({ path, component: Component, protected: isProtected }) => (
+                <Route
+                  key={path}
+                  path={path}
+                  element={isProtected ? (
+                    <ProtectedRoute>
+                      <Component />
+                    </ProtectedRoute>
+                  ) : (
+                    <Component />
+                  )}
+                />
               ))}
             </Route>
           </Routes>
