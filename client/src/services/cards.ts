@@ -2,7 +2,7 @@ import api from './client';
 import { getErrorMessage } from '@/utils/errorHandler';
 
 interface Card {
-  id: number;
+  id?: string;
   playerName: string;
   teamName: string;
   series: string;

@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { getUserProfile } from "@/services/users";
 import { getAllCards, addNewCard, updateCard, deleteCard } from "@/services/cards";
-import { Trash2, SquarePen } from "lucide-react";
+import { Trash2, SquarePen, LogOut, Plus } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import CardFormModal from "@/components/CardFormModal";
 
 interface Profile {
   username: string;
@@ -9,7 +11,7 @@ interface Profile {
 }
 
 interface Card {
-  id: string;
+  id?: string;
   playerName: string;
   teamName: string;
   series: string;
@@ -23,22 +25,97 @@ interface Card {
 }
 
 const AdminDashboard = () => {
+  const navigate = useNavigate();
   const username = localStorage.getItem('authUsername') || '';
   const [profile, setProfile] = useState<Profile | null>(null);
   const [cards, setCards] = useState<Card[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedCard, setSelectedCard] = useState<Card | null>(null);
+  const [formData, setFormData] = useState<Card>({
+    playerName: '',
+    teamName: '',
+    series: '',
+    yearReleased: new Date().getFullYear(),
+    ebayUrl: '',
+    imageUrl: '',
+    stock: 0,
+    price: 0,
+    forSale: true,
+    user: username
+  });
 
   const handleDeleteCard = async (cardId: string) => {
     try {
-      const confirmDialog = window.confirm("Are you sure you want to delete this card?");
-      if (!confirmDialog) return;
-      console.log(cardId)
-      await deleteCard(cardId);
-      setCards(cards.filter(card => card.id !== cardId));
-      alert("Card deleted successfully.");
+      if (confirm("Are you sure you want to delete this card?")) {
+        await deleteCard(cardId);
+        setCards(cards.filter(card => card.id !== cardId));
+        alert("Card deleted successfully.");
+      }
+
+      return;
     } catch (error) {
       console.error("Error deleting card:", error);
+      alert("Failed to delete card.");
     }
   }
+
+  const handleAddCard = () => {
+    setSelectedCard(null);
+    setFormData({
+      playerName: '',
+      teamName: '',
+      series: '',
+      yearReleased: new Date().getFullYear(),
+      ebayUrl: '',
+      imageUrl: '',
+      stock: 0,
+      price: 0,
+      forSale: true,
+      user: username
+    });
+    setIsModalOpen(true);
+  };
+
+  const handleEditCard = (card: Card) => {
+    setSelectedCard(card);
+    setFormData(card);
+    setIsModalOpen(true);
+  };
+
+  const handleModalSubmit = async (cardData: Card) => {
+    try {
+      if (selectedCard && selectedCard.id) {
+        // Update existing card
+        const updatedCard = await updateCard(selectedCard.id, cardData);
+        setCards(cards.map(card => card.id === selectedCard.id ? updatedCard : card));
+        alert("Card updated successfully.");
+      } else {
+        // Add new card
+        const newCard = await addNewCard(cardData);
+        setCards([...cards, newCard]);
+        alert("Card added successfully.");
+      }
+
+      setFormData({
+        playerName: '',
+        teamName: '',
+        series: '',
+        yearReleased: new Date().getFullYear(),
+        ebayUrl: '',
+        imageUrl: '',
+        stock: 0,
+        price: 0,
+        forSale: true,
+        user: username
+      });
+
+      setIsModalOpen(false);
+      setSelectedCard(null);
+    } catch (error) {
+      console.error("Error saving card:", error);
+      alert("Failed to save card.");
+    }
+  };
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -52,6 +129,16 @@ const AdminDashboard = () => {
     }
     fetchUserProfile();
   }, [username]);
+
+  const handleLogout = () => {
+    if (confirm("Are you sure you want to logout?")) {
+      localStorage.removeItem('authUsername');
+      localStorage.removeItem('authToken');
+      navigate('/login');
+    }
+
+    return;
+  }
 
   useEffect(() => {
     const fetchCards = async () => {
@@ -67,63 +154,28 @@ const AdminDashboard = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
+      <div className="flex justify-between items-start">
+        <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
+        <button
+          onClick={() => handleLogout()}
+          className="bg-gray-400 py-1 px-2 text-white font-semibold rounded-lg hover:bg-gray-600 transition-colors duration-300 cursor-pointer"
+        >
+          <LogOut size={20} />
+        </button>
+      </div>
+
       <p>Welcome {profile?.name}. Here you can manage the application.</p>
 
-      {/* My form for add/update card here */}
-      <form className="mt-6">
-        <h2 className="text-2xl font-semibold mb-4">Add / Update Card</h2>
-        {/* Form fields for card details */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="mb-4">
-            <label className="block text-gray-700 font-semibold mb-2">Player Name</label>
-            <input type="text" className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 font-semibold mb-2">Team Name</label>
-            <input type="text" className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" />
-          </div>
-          {/* Additional fields for series, yearReleased, ebayUrl, imageUrl, stock, price, forSale */}
-          <div className="mb-4">
-            <label className="block text-gray-700 font-semibold mb-2">Series</label>
-            <input type="text" className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 font-semibold mb-2">Year Released</label>
-            <input type="number" className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" />
-          </div>
-          <div className="mb-4 md:col-span-2">
-            <label className="block text-gray-700 font-semibold mb-2">eBay URL</label>
-            <input type="text" className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" />
-          </div>
-          <div className="mb-4 md:col-span-2">
-            <label className="block text-gray-700 font-semibold mb-2">Image URL</label>
-            <input type="text" className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 font-semibold mb-2">Stock</label>
-            <input type="number" className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 font-semibold mb-2">Price</label>
-            <input type="number" className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 font-semibold mb-2">For Sale</label>
-            <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
-              <option value="true">Yes</option>
-              <option value="false">No</option>
-            </select>
-          </div>
-        </div>
-        <button type="submit" className="bg-primary text-white font-semibold py-2 px-4 rounded-lg hover:bg-primary-dark transition-colors duration-300">
-          Submit
-        </button>
-      </form>
-
-      {/* table here to display cards */}
       <div className="mt-10">
-        <h2 className="text-2xl font-semibold mb-4">Manage Cards</h2>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-2xl font-semibold">Manage Cards</h2>
+          <button
+            onClick={handleAddCard}
+            className="bg-green-500 text-white font-semibold py-1 px-2 rounded-lg hover:bg-green-600 transition-colors duration-300 flex items-center gap-2 cursor-pointer"
+          >
+            <Plus size={20} />
+          </button>
+        </div>
         <table className="min-w-full bg-white border border-gray-300">
           <thead>
             <tr>
@@ -146,18 +198,31 @@ const AdminDashboard = () => {
                 <td className="py-2 px-4 border-b border-gray-300">${card.price}</td>
                 <td className="py-2 px-4 border-b border-gray-300">{card.stock}</td>
                 <td className="py-2 px-4 border-b border-gray-300">
-                  <button className="text-blue-500 hover:underline mr-4"><SquarePen /></button>
-                  <button onClick={() => handleDeleteCard(card.id)} className="text-red-500 hover:underline cursor-pointer"><Trash2 /></button>
+                  <button
+                    onClick={() => handleEditCard(card)}
+                    className="text-blue-500 hover:underline mr-4 cursor-pointer"
+                  >
+                    <SquarePen />
+                  </button>
+                  <button onClick={() => card.id && handleDeleteCard(card.id)} className="text-red-500 hover:underline cursor-pointer"><Trash2 /></button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
+      </div>
 
-        {/* pagination here */}
-
-
-      </div>    
+      <CardFormModal
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+          setSelectedCard(null);
+        }}
+        onSubmit={handleModalSubmit}
+        card={selectedCard}
+        setForm={setFormData}
+        formData={formData}
+      />
     </div>
   )
 }
