@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Card } from '@/components/ui/Card';
 import { ExternalLink } from 'lucide-react';
@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/Pagination';
 import { Button } from '@/components/ui/Button';
 import { getAllCards } from '@/services/cards';
+import { useQuery } from '@tanstack/react-query';
 
 interface Card {
   id: number;
@@ -30,13 +31,6 @@ interface Card {
 const Shop = () => {
   const itemsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
-  const [cards, setCards] = useState<Card[]>([]);
-  const totalItems = cards.length; // Total number of shop items
-
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = cards.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -47,7 +41,6 @@ const Shop = () => {
     window.open(ebayUrl, '_blank', 'noopener,noreferrer');
   };
 
-  const pageKey = `page-${currentPage}-${totalItems}`
 
   // Animation variants
   const fadeInUp = {
@@ -65,19 +58,20 @@ const Shop = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchCards = async () => {
-      try {
-        const data = await getAllCards();
+  const resultCards = useQuery({
+    queryKey: ['cards'],
+    queryFn: getAllCards,
+    refetchOnWindowFocus: false,
+  });
 
-        setCards(data.filter((card: Card) => card.forSale));
-      } catch (error) {
-        console.error(error);
-      }
-    };
+  const shopCards = resultCards.data ? resultCards.data.filter((card: Card) => card.forSale) : [];
 
-    fetchCards();
-  }, []);
+  const totalItems = shopCards.length;
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = shopCards.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const pageKey = `page-${currentPage}-${totalItems}`;
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -104,7 +98,7 @@ const Shop = () => {
         key={pageKey}
         className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
       >
-        {currentItems.map((card) => (
+        {currentItems.map((card: Card) => (
           <motion.div
             key={card.id}
             variants={fadeInUp}

@@ -3,8 +3,8 @@ import { Button } from '@/components/ui/Button';
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/Card';
 import { ArrowRight, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { useEffect, useState } from 'react';
 import { getAllCards } from '@/services/cards';
+import { useQuery } from '@tanstack/react-query';
 
 interface Card {
   id: number;
@@ -16,13 +16,11 @@ interface Card {
   imageUrl: string;
   stock: number;
   price: number;
-  forSale: boolean
+  forSale: boolean;
   user: string;
 }
 
 const Home = () => {
-  const [featuredCards, setFeaturedCards] = useState<Card[]>([]);
-  const [collectionCards, setCollectionCards] = useState<Card[]>([]);
   // Animation variants
   const fadeInUp = {
     initial: { opacity: 0, y: 60 },
@@ -42,19 +40,14 @@ const Home = () => {
     window.open(ebayLink, '_blank', 'noopener,noreferrer');
   };
 
-  useEffect(() => {
-    const fetchFeaturedCards = async () => {
-      try {
-        const data = await getAllCards();
-        setFeaturedCards(data.filter((card: Card) => card.forSale).slice(0, 3));
-        setCollectionCards(data.filter((card: Card) => !card.forSale));
-      } catch (error) {
-        console.error(error);
-      }
-    };
+  const resultCards = useQuery({
+    queryKey: ['cards'],
+    queryFn: getAllCards,
+    refetchOnWindowFocus: false,
+  })
 
-    fetchFeaturedCards();
-  }, []);
+  const featuredCards = resultCards.data ? resultCards.data.filter((card: Card) => card.forSale).slice(0, 3) : [];
+  const collectionCards = resultCards.data ? resultCards.data.filter((card: Card) => !card.forSale) : [];
 
   return (
     <>
@@ -219,9 +212,9 @@ const Home = () => {
             variants={staggerContainer}
             className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12"
           >
-            {collectionCards.map((card: Card, index) => (
+            {collectionCards.map((card: Card) => (
               <motion.div
-                key={index}
+                key={card.id}
                 variants={fadeInUp}
 
               >
@@ -230,7 +223,7 @@ const Home = () => {
                     <img
                       // src={card.imageUrl}
                       src={'/sample-baseball-card-1.webp'}
-                      alt={`Baseball card ${index + 1}`}
+                      alt={`Baseball card ${card.id}`}
                       className="w-full h-full object-cover hover:scale-110 transition-transform duration-500" />
                   </div>
                 </Card>
