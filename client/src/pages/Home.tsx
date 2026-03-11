@@ -144,9 +144,9 @@ const Home = () => {
             variants={staggerContainer}
             className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12"
           >
-            {featuredCards.map((card: Card ) => (
+            {featuredCards.map((card: Card) => (
               <motion.div key={card.id} variants={fadeInUp}>
-                <Card className="overflow-hidden transition-all duration-300 h-full rounded-xl border-primary shadow-[-8px_8px_0px_0px_var(--color-primary)] hover:shadow-[-12px_12px_0px_0px_var(--color-primary)] bg-white">
+                <Card className="overflow-hidden transition-all duration-300 h-full rounded-xl border-primary shadow-[-8px_8px_0px_0px_var(--color-primary)] hover:shadow-[-12px_12px_0px_0px_var(--color-primary)] ">
                   <div className="aspect-3/4 overflow-hidden">
                     <img
                       // src={card.imageUrl}
@@ -225,7 +225,7 @@ const Home = () => {
                 variants={fadeInUp}
 
               >
-                <Card className="overflow-hidden transition-all duration-300 h-full rounded-xl border-primary shadow-[-8px_8px_0px_0px_var(--color-primary)] hover:shadow-[-12px_12px_0px_0px_var(--color-primary)] bg-white">
+                <Card className="overflow-hidden transition-all duration-300 h-full rounded-xl border-primary shadow-[-8px_8px_0px_0px_var(--color-primary)] hover:shadow-[-12px_12px_0px_0px_var(--color-primary)]">
                   <div className="overflow-hidden">
                     <img
                       // src={card.imageUrl}

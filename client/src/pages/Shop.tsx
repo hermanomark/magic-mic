@@ -81,7 +81,7 @@ const Shop = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <motion.h1 
+      <motion.h1
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
@@ -89,7 +89,7 @@ const Shop = () => {
       >
         Shop
       </motion.h1>
-      <motion.p 
+      <motion.p
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.1 }}
@@ -105,17 +105,17 @@ const Shop = () => {
         className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
       >
         {currentItems.map((card) => (
-          <motion.div 
-            key={card.id} 
+          <motion.div
+            key={card.id}
             variants={fadeInUp}
             className="w-full"
           >
-            <Card className='py-2 gap-2 overflow-hidden transition-all duration-300 h-full rounded-xl border-primary shadow-[-8px_8px_0px_0px_var(--color-primary)] hover:shadow-[-12px_12px_0px_0px_var(--color-primary)] bg-white flex flex-col'>
+            <Card className='py-2 gap-2 overflow-hidden transition-all duration-300 h-full rounded-xl border-primary shadow-[-8px_8px_0px_0px_var(--color-primary)] hover:shadow-[-12px_12px_0px_0px_var(--color-primary)]  flex flex-col'>
               <img src="/sample-baseball-card-3.avif" alt={card.playerName} className="w-full h-full object-cover hover:scale-110 transition-transform duration-500" />
 
               <div className="px-4 py-2 flex flex-col grow">
                 <h2 className="text-md font-semibold text-primary mb-2">{card.playerName}</h2>
-                <p className="text-gray-600 text-sm mb-3 grow">{card.teamName} - {card.series} ({card.yearReleased})</p>
+                <p className="text-primary text-sm mb-3 grow">{card.teamName} - {card.series} ({card.yearReleased})</p>
                 <div className="mt-auto">
                   <p className="text-2xl font-bold text-primary mb-3">${card.price}</p>
                   <Button
