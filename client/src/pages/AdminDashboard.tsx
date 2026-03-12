@@ -1,14 +1,30 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { getUserProfile } from "@/services/users";
 import { getAllCards, addNewCard, updateCard, deleteCard } from "@/services/cards";
-import { Trash2, SquarePen, LogOut, Plus } from "lucide-react";
+import { Trash2, SquarePen, LogOut, SquarePlus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import CardFormModal from "@/components/CardFormModal";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/Pagination";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
-interface Profile {
-  username: string;
-  name: string;
-}
 
 interface Card {
   id?: string;
@@ -26,12 +42,15 @@ interface Card {
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const username = localStorage.getItem('authUsername') || '';
-  const [profile, setProfile] = useState<Profile | null>(null);
-  const [cards, setCards] = useState<Card[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState<Card | null>(null);
-  const [formData, setFormData] = useState<Card>({
+  const [cardToDelete, setCardToDelete] = useState<string | null>(null);
+  const itemsPerPage = 12;
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const initializeCard: Card = {
     playerName: '',
     teamName: '',
     series: '',
@@ -42,37 +61,61 @@ const AdminDashboard = () => {
     price: 0,
     forSale: true,
     user: username
+  };
+
+  const [formData, setFormData] = useState<Card>({ ...initializeCard });
+
+  const resetForm = () => {
+    setFormData({ ...initializeCard });
+    setSelectedCard(null);
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const newCardMutation = useMutation({
+    mutationFn: addNewCard,
+    onSuccess: (newCard) => {
+      const cards = queryClient.getQueryData<Card[]>(['cards']) || [];
+      queryClient.setQueryData(['cards'], [...cards, newCard]);
+      toast.success(`Card "${newCard.playerName}" added successfully.`);
+    },
+    onError(error: string) {
+      toast.error(error || "Failed to add new card.");
+    }
   });
 
-  const handleDeleteCard = async (cardId: string) => {
-    try {
-      if (confirm("Are you sure you want to delete this card?")) {
-        await deleteCard(cardId);
-        setCards(cards.filter(card => card.id !== cardId));
-        alert("Card deleted successfully.");
-      }
-
-      return;
-    } catch (error) {
-      console.error("Error deleting card:", error);
-      alert("Failed to delete card.");
+  const updateCardMutation = useMutation({
+    mutationFn: updateCard,
+    onSuccess: (updatedCard) => {
+      queryClient.setQueryData<Card[]>(['cards'], (oldCards) => {
+        if (!oldCards) return [];
+        return oldCards.map(card => card.id === updatedCard.id ? updatedCard : card);
+      });
+      toast.success(`Card "${updatedCard.playerName}" updated successfully.`);
+    },
+    onError(error: string) {
+      toast.error(error || "Failed to update the card.");
     }
-  }
+  });
+
+  const deleteCardMutation = useMutation({
+    mutationFn: deleteCard,
+    onSuccess: (_data, cardId) => {
+      queryClient.setQueryData<Card[]>(['cards'], (oldCards) => {
+        if (!oldCards) return [];
+        return oldCards.filter(card => card.id !== cardId);
+      });
+      toast.success("Card deleted successfully.");
+    },
+    onError(error: string) {
+      toast.error(error || "Failed to delete the card.");
+    }
+  });
 
   const handleAddCard = () => {
-    setSelectedCard(null);
-    setFormData({
-      playerName: '',
-      teamName: '',
-      series: '',
-      yearReleased: new Date().getFullYear(),
-      ebayUrl: '',
-      imageUrl: '',
-      stock: 0,
-      price: 0,
-      forSale: true,
-      user: username
-    });
+    resetForm();
     setIsModalOpen(true);
   };
 
@@ -83,52 +126,26 @@ const AdminDashboard = () => {
   };
 
   const handleModalSubmit = async (cardData: Card) => {
-    try {
-      if (selectedCard && selectedCard.id) {
-        // Update existing card
-        const updatedCard = await updateCard(selectedCard.id, cardData);
-        setCards(cards.map(card => card.id === selectedCard.id ? updatedCard : card));
-        alert("Card updated successfully.");
-      } else {
-        // Add new card
-        const newCard = await addNewCard(cardData);
-        setCards([...cards, newCard]);
-        alert("Card added successfully.");
-      }
-
-      setFormData({
-        playerName: '',
-        teamName: '',
-        series: '',
-        yearReleased: new Date().getFullYear(),
-        ebayUrl: '',
-        imageUrl: '',
-        stock: 0,
-        price: 0,
-        forSale: true,
-        user: username
-      });
-
-      setIsModalOpen(false);
-      setSelectedCard(null);
-    } catch (error) {
-      console.error("Error saving card:", error);
-      alert("Failed to save card.");
+    if (selectedCard && selectedCard.id) {
+      updateCardMutation.mutate({ ...cardData, id: selectedCard.id });
+    } else {
+      newCardMutation.mutate(cardData);
     }
+
+    resetForm();
+    setIsModalOpen(false);
   };
 
-  useEffect(() => {
-    const fetchUserProfile = async () => {
-      try {
-        const profile = await getUserProfile(username);
-        setProfile(profile);
-        console.log("Admin User Profile:", profile);
-      } catch (error) {
-        console.error("Error fetching user profile:", error);
-      }
+  const handleDeleteCard = (cardId: string) => {
+    setCardToDelete(cardId);
+  };
+
+  const confirmDelete = () => {
+    if (cardToDelete) {
+      deleteCardMutation.mutate(cardToDelete);
+      setCardToDelete(null);
     }
-    fetchUserProfile();
-  }, [username]);
+  };
 
   const handleLogout = () => {
     if (confirm("Are you sure you want to logout?")) {
@@ -140,43 +157,56 @@ const AdminDashboard = () => {
     return;
   }
 
-  useEffect(() => {
-    const fetchCards = async () => {
-      try {
-        const cardsData = await getAllCards();
-        setCards(cardsData);
-      } catch (error) {
-        console.error("Error fetching cards:", error);
-      }
-    }
-    fetchCards();
-  }, []);
+  const resultUser = useQuery({
+    queryKey: ['profile', username],
+    queryFn: () => getUserProfile(username),
+    enabled: !!username,
+    refetchOnWindowFocus: false,
+  });
+
+  const resultCards = useQuery({
+    queryKey: ['cards'],
+    queryFn: getAllCards,
+    refetchOnWindowFocus: false,
+  });
+
+  const cards = resultCards.data || [];
+  const user = resultUser.data || null;
+
+  const totalPages = Math.ceil(cards.length / itemsPerPage);
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentCards = cards.slice(indexOfFirstItem, indexOfLastItem);
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-start">
+      <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
-        <button
-          onClick={() => handleLogout()}
-          className="bg-gray-400 py-1 px-2 text-white font-semibold rounded-lg hover:bg-gray-600 transition-colors duration-300 cursor-pointer"
-        >
-          <LogOut size={20} />
-        </button>
+        <div className="flex items-center">
+          {user?.username && <span className="mr-4 inline-flex items-center rounded-full border border-border bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">{user.username}</span>}
+          <button
+            onClick={() => handleLogout()}
+            className="text-foreground hover:opacity-70 transition-opacity duration-300 cursor-pointer flex items-center gap-2"
+          >
+            <LogOut size={20} /> Logout
+          </button>
+        </div>
+
       </div>
 
-      <p>Welcome {profile?.name}. Here you can manage the application.</p>
+      <p>Welcome {user?.name}. Here you can manage the application.</p>
 
       <div className="mt-10">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-semibold">Manage Cards</h2>
           <button
             onClick={handleAddCard}
-            className="bg-green-500 text-white font-semibold py-1 px-2 rounded-lg hover:bg-green-600 transition-colors duration-300 flex items-center gap-2 cursor-pointer"
+            className="text-foreground hover:opacity-70 transition-opacity duration-300 cursor-pointer flex items-center gap-2"
           >
-            <Plus size={20} />
+            <SquarePlus size={20} /> Add New Card
           </button>
         </div>
-        <table className="min-w-full bg-white border border-gray-300">
+        <table className="min-w-full border border-gray-300">
           <thead>
             <tr>
               <th className="py-2 px-4 border-b border-gray-300">Player Name</th>
@@ -189,7 +219,7 @@ const AdminDashboard = () => {
             </tr>
           </thead>
           <tbody>
-            {cards.map((card) => (
+            {currentCards.map((card: Card) => (
               <tr key={card.id}>
                 <td className="py-2 px-4 border-b border-gray-300">{card.playerName}</td>
                 <td className="py-2 px-4 border-b border-gray-300">{card.teamName}</td>
@@ -204,12 +234,44 @@ const AdminDashboard = () => {
                   >
                     <SquarePen />
                   </button>
-                  <button onClick={() => card.id && handleDeleteCard(card.id)} className="text-red-500 hover:underline cursor-pointer"><Trash2 /></button>
+                  <button onClick={() => card.id && handleDeleteCard(card.id)} className="text-red-500 hover:opacity-70 transition-opacity cursor-pointer"><Trash2 /></button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
+
+        {totalPages > 1 && (
+          <Pagination className="mt-6">
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  onClick={() => currentPage > 1 && handlePageChange(currentPage - 1)}
+                  className={currentPage === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                />
+              </PaginationItem>
+
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                <PaginationItem key={page}>
+                  <PaginationLink
+                    onClick={() => handlePageChange(page)}
+                    isActive={currentPage === page}
+                    className="cursor-pointer"
+                  >
+                    {page}
+                  </PaginationLink>
+                </PaginationItem>
+              ))}
+
+              <PaginationItem>
+                <PaginationNext
+                  onClick={() => currentPage < totalPages && handlePageChange(currentPage + 1)}
+                  className={currentPage === totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        )}
       </div>
 
       <CardFormModal
@@ -223,6 +285,21 @@ const AdminDashboard = () => {
         setForm={setFormData}
         formData={formData}
       />
+
+      <AlertDialog open={!!cardToDelete} onOpenChange={(open) => !open && setCardToDelete(null)}>
+        <AlertDialogContent size="sm">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete card?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently delete this card. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel variant="outline" onClick={() => setCardToDelete(null)}>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDelete} variant="destructive">Delete</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

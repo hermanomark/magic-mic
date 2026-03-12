@@ -45,9 +45,9 @@ export const addNewCard = async (cardData: Card) => {
   }
 }
 
-export const updateCard = async (id: string, cardData: Card) => {
+export const updateCard = async (cardData: Card) => {
   try {
-    const response = await api.put(`/cards/${id}`, cardData);
+    const response = await api.put(`/cards/${cardData.id}`, cardData);
     return response.data;
   } catch (error) {
     const errorMessage = getErrorMessage(error, 'Failed to update the card.');

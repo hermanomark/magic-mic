@@ -59,6 +59,10 @@ cardsRouter.put('/:id', middleware.userExtractor, async (req, res) => {
     return res.status(404).json({ error: 'card not found' })
   }
 
+  if (!cardToUpdate.user) {
+    return res.status(401).json({ error: 'card does not belong to a user' })
+  }
+
   if (cardToUpdate.user.toString() !== user._id.toString()) {
     return res.status(401).json({ error: 'only the creator can update its own card' })
   }
@@ -87,7 +91,7 @@ cardsRouter.delete('/:id', middleware.userExtractor, async (req, res) => {
   }
 
   if (!cardToDelete.user) {
-    return res.status(401).json({ error: 'card does not belong to the user' })
+    return res.status(401).json({ error: 'card does not belong to a user' })
   }
 
   if (cardToDelete.user.toString() !== user._id.toString()) {

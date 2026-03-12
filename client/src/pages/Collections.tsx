@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { getAllCards } from '@/services/cards';
 import { useQuery } from '@tanstack/react-query'
-
 import { Card } from '@/components/ui/Card';
 import { motion } from 'framer-motion';
 
@@ -98,10 +97,10 @@ const Collections = () => {
             variants={fadeInUp}
             className="w-full"
           >
-            <Card className='py-2 gap-2 overflow-hidden transition-all duration-300 h-full rounded-xl border-primary shadow-[-8px_8px_0px_0px_var(--color-primary)] hover:shadow-[-12px_12px_0px_0px_var(--color-primary)]'>
+            <Card className='py-2 pt-0 gap-2 overflow-hidden transition-all duration-300 h-full rounded-xl border-primary shadow-[-8px_8px_0px_0px_var(--color-primary)] hover:shadow-[-12px_12px_0px_0px_var(--color-primary)]'>
               <img
                 // src={card.image}
-                src={'/sample-baseball-card-1.webp'}
+                src={'/jasson-dominguez.jpg'}
                 alt={card.playerName}
                 className="w-full h-full object-cover hover:scale-110 transition-transform duration-500" />
               <div className="px-4 py-2">
