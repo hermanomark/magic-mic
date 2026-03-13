@@ -1,7 +1,6 @@
-import { useState } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { getUserProfile } from "@/services/users";
 import { getAllCards, addNewCard, updateCard, deleteCard } from "@/services/cards";
-import { Trash2, SquarePen, LogOut, SquarePlus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import CardFormModal from "@/components/CardFormModal";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -16,22 +15,11 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-
-
-interface Card {
-  id?: string;
-  playerName: string;
-  teamName: string;
-  series: string;
-  yearReleased: number;
-  ebayUrl: string;
-  imageUrl: string;
-  stock: number;
-  price: number;
-  forSale: boolean
-  user: string;
-}
+} from "@/components/ui/AlertDialog";
+import { DataTable } from "@/components/ui/DataTable";
+import { LogOut, SquarePlus } from "lucide-react";
+import { getCardColumns } from "@/components/AdminDashboardColumns";
+import { type Card } from "@/types/Card";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -112,11 +100,11 @@ const AdminDashboard = () => {
     setIsModalOpen(true);
   };
 
-  const handleEditCard = (card: Card) => {
+  const handleEditCard = useCallback((card: Card) => {
     setSelectedCard(card);
     setFormData(card);
     setIsModalOpen(true);
-  };
+  }, []);
 
   const handleModalSubmit = async (cardData: Card) => {
     if (selectedCard && selectedCard.id) {
@@ -129,9 +117,14 @@ const AdminDashboard = () => {
     setIsModalOpen(false);
   };
 
-  const handleDeleteCard = (cardId: string) => {
+  const handleDeleteCard = useCallback((cardId: string) => {
     setCardToDelete(cardId);
-  };
+  }, []);
+
+  const columns = useMemo(
+    () => getCardColumns({ handleEditCard, handleDeleteCard }),
+    [handleEditCard, handleDeleteCard]
+  );
 
   const confirmDelete = () => {
     if (cardToDelete) {
@@ -199,40 +192,8 @@ const AdminDashboard = () => {
             <SquarePlus size={20} /> Add New Card
           </button>
         </div>
-        <table className="min-w-full border border-gray-300">
-          <thead>
-            <tr>
-              <th className="py-2 px-4 border-b border-gray-300">Player Name</th>
-              <th className="py-2 px-4 border-b border-gray-300">Team Name</th>
-              <th className="py-2 px-4 border-b border-gray-300">Series</th>
-              <th className="py-2 px-4 border-b border-gray-300">Year Released</th>
-              <th className="py-2 px-4 border-b border-gray-300">Price</th>
-              <th className="py-2 px-4 border-b border-gray-300">Stock</th>
-              <th className="py-2 px-4 border-b border-gray-300">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentCards.map((card: Card) => (
-              <tr key={card.id}>
-                <td className="py-2 px-4 border-b border-gray-300">{card.playerName}</td>
-                <td className="py-2 px-4 border-b border-gray-300">{card.teamName}</td>
-                <td className="py-2 px-4 border-b border-gray-300">{card.series}</td>
-                <td className="py-2 px-4 border-b border-gray-300">{card.yearReleased}</td>
-                <td className="py-2 px-4 border-b border-gray-300">${card.price}</td>
-                <td className="py-2 px-4 border-b border-gray-300">{card.stock}</td>
-                <td className="py-2 px-4 border-b border-gray-300">
-                  <button
-                    onClick={() => handleEditCard(card)}
-                    className="text-blue-500 hover:underline mr-4 cursor-pointer"
-                  >
-                    <SquarePen />
-                  </button>
-                  <button onClick={() => card.id && handleDeleteCard(card.id)} className="text-red-500 hover:opacity-70 transition-opacity cursor-pointer"><Trash2 /></button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+
+        <DataTable columns={columns} data={currentCards} />
 
         <TablePagination
           currentPage={currentPage}
