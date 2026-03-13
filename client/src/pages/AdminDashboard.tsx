@@ -6,14 +6,7 @@ import { useNavigate } from "react-router-dom";
 import CardFormModal from "@/components/CardFormModal";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/Pagination";
+import TablePagination from "@/components/TablePagination";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -181,14 +174,14 @@ const AdminDashboard = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
+        <h1 className="text-3xl font-bold mb-6 text-primary">Admin Dashboard</h1>
         <div className="flex items-center">
           {user?.username && <span className="mr-4 inline-flex items-center rounded-full border border-border bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">{user.username}</span>}
           <button
             onClick={() => handleLogout()}
-            className="text-foreground hover:opacity-70 transition-opacity duration-300 cursor-pointer flex items-center gap-2"
+            className="text-foreground hover:opacity-70 transition-opacity duration-300 cursor-pointer flex items-center gap-2 text-sm"
           >
-            <LogOut size={20} /> Logout
+            <LogOut size={10} /> Logout
           </button>
         </div>
 
@@ -198,10 +191,10 @@ const AdminDashboard = () => {
 
       <div className="mt-10">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-semibold">Manage Cards</h2>
+          <h2 className="text-2xl font-semibold text-primary">Manage Cards</h2>
           <button
             onClick={handleAddCard}
-            className="text-foreground hover:opacity-70 transition-opacity duration-300 cursor-pointer flex items-center gap-2"
+            className="hover:opacity-70 transition-opacity duration-300 cursor-pointer flex items-center gap-2 text-primary"
           >
             <SquarePlus size={20} /> Add New Card
           </button>
@@ -241,37 +234,11 @@ const AdminDashboard = () => {
           </tbody>
         </table>
 
-        {totalPages > 1 && (
-          <Pagination className="mt-6">
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious
-                  onClick={() => currentPage > 1 && handlePageChange(currentPage - 1)}
-                  className={currentPage === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
-                />
-              </PaginationItem>
-
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                <PaginationItem key={page}>
-                  <PaginationLink
-                    onClick={() => handlePageChange(page)}
-                    isActive={currentPage === page}
-                    className="cursor-pointer"
-                  >
-                    {page}
-                  </PaginationLink>
-                </PaginationItem>
-              ))}
-
-              <PaginationItem>
-                <PaginationNext
-                  onClick={() => currentPage < totalPages && handlePageChange(currentPage + 1)}
-                  className={currentPage === totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
-                />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
-        )}
+        <TablePagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
       </div>
 
       <CardFormModal
