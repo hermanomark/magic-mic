@@ -111,10 +111,10 @@ export function getCardColumns({ handleEditCard, handleDeleteCard }: CardColumnH
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => handleEditCard(card)}>
+              <DropdownMenuItem onClick={() => handleEditCard(card)} className="cursor-pointer">
                 <SquarePen /> Edit
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => card.id && handleDeleteCard(card.id)}>
+              <DropdownMenuItem onClick={() => card.id && handleDeleteCard(card.id)} className="cursor-pointer">
                 <Trash2 /> Delete
               </DropdownMenuItem>
             </DropdownMenuContent>

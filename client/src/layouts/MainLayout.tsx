@@ -2,7 +2,7 @@ import { Link, Outlet } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import { SquareArrowUp } from "lucide-react";
 import { useState, useEffect } from "react";
-import { Toaster } from "@/components/ui/sonner";
+import { Toaster } from "@/components/ui/Sonner";
 
 const MainLayout = () => {
   const [showScrollTop, setShowScrollTop] = useState(false);
@@ -29,18 +29,16 @@ const MainLayout = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      {/* Header - Fixed at top with backdrop blur for modern look */}
+      {/* Header */}
       <Navigation />
       <Toaster />
 
-      {/* Main Content Area - Flexible and responsive */}
       <main className="flex-1 w-full min-h-screen">
         <div className="w-full mx-auto py-4 sm:py-8 lg:py-12">
           <Outlet />
         </div>
       </main>
 
-      {/* Footer - Optional, uncomment if needed */}
       <footer className="w-full bg-background">
         <div className="container mx-auto py-6 px-4 sm:py-8">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
