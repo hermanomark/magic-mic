@@ -28,6 +28,7 @@ const AdminDashboard = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState<Card | null>(null);
   const [cardToDelete, setCardToDelete] = useState<string | null>(null);
+  const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
   const itemsPerPage = 12;
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -134,14 +135,14 @@ const AdminDashboard = () => {
   };
 
   const handleLogout = () => {
-    if (confirm("Are you sure you want to logout?")) {
-      localStorage.removeItem('authUsername');
-      localStorage.removeItem('authToken');
-      navigate('/login');
-    }
+    setIsLogoutDialogOpen(true);
+  };
 
-    return;
-  }
+  const confirmLogout = () => {
+    localStorage.removeItem('authUsername');
+    localStorage.removeItem('authToken');
+    navigate('/login');
+  };
 
   const resultUser = useQuery({
     queryKey: ['profile', username],
@@ -214,6 +215,21 @@ const AdminDashboard = () => {
         formData={formData}
       />
 
+      <AlertDialog open={isLogoutDialogOpen} onOpenChange={setIsLogoutDialogOpen}>
+        <AlertDialogContent size="sm">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Logout?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to logout?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="cursor-pointer" variant="outline" size="default" onClick={() => setIsLogoutDialogOpen(false)}>Cancel</AlertDialogCancel>
+            <AlertDialogAction className="cursor-pointer" onClick={confirmLogout} size="default">Logout</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       <AlertDialog open={!!cardToDelete} onOpenChange={(open) => !open && setCardToDelete(null)}>
         <AlertDialogContent size="sm">
           <AlertDialogHeader>
@@ -223,8 +239,8 @@ const AdminDashboard = () => {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel variant="outline" size="default" onClick={() => setCardToDelete(null)}>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmDelete} variant="destructive" size="default">Delete</AlertDialogAction>
+            <AlertDialogCancel className="cursor-pointer" variant="outline" size="default" onClick={() => setCardToDelete(null)}>Cancel</AlertDialogCancel>
+            <AlertDialogAction className="cursor-pointer" onClick={confirmDelete} variant="destructive" size="default">Delete</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
