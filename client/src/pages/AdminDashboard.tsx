@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback } from "react";
 import { getUserProfile } from "@/services/users";
-import { getAllCards, addNewCard, updateCard, deleteCard } from "@/services/cards";
+import { getAllCards, addNewCard, updateCard, deleteCard, getStats } from "@/services/cards";
 import { useNavigate } from "react-router-dom";
 import CardFormModal from "@/components/CardFormModal";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -16,9 +16,10 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/AlertDialog";
 import { DataTable } from "@/components/ui/DataTable";
-import { LogOut, SquarePlus } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { getCardColumns } from "@/components/AdminDashboardColumns";
 import { type Card } from "@/types/Card";
+import Stats from "@/components/Stats";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -150,13 +151,20 @@ const AdminDashboard = () => {
     refetchOnWindowFocus: false,
   });
 
+  const resultStats = useQuery({
+    queryKey: ['stats'],
+    queryFn: getStats,
+    refetchOnWindowFocus: false,
+  });
+
   const cards = resultCards.data || [];
   const user = resultUser.data || null;
+  const stats = resultStats.data || null;
 
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold mb-6 text-primary">Admin Dashboard</h1>
+        <h1 className="text-3xl font-bold mb-6 text-primary">Dashboard</h1>
         <div className="flex items-center">
           {user?.username && <span className="mr-4 inline-flex items-center rounded-full border border-border bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">{user.username}</span>}
           <button
@@ -170,19 +178,12 @@ const AdminDashboard = () => {
       </div>
 
       <p>Welcome {user?.name}. Here you can manage the application.</p>
+      {stats && <Stats stats={stats} />}
 
-      <div className="mt-10">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-semibold text-primary">Manage Cards</h2>
-          <button
-            onClick={handleAddCard}
-            className="hover:opacity-70 transition-opacity duration-300 cursor-pointer flex items-center gap-2 text-primary"
-          >
-            <SquarePlus size={20} /> Add New Card
-          </button>
-        </div>
+      <div className="mt-6">
 
-        <DataTable columns={columns} data={cards} />
+
+        <DataTable columns={columns} data={cards} handleAddCard={handleAddCard} />
       </div>
 
       <CardFormModal

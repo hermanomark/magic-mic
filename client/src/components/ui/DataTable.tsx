@@ -21,15 +21,18 @@ import {
 import { useState } from "react"
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { SquarePlus } from "lucide-react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
+  handleAddCard: () => void
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  handleAddCard,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
@@ -52,13 +55,21 @@ export function DataTable<TData, TValue>({
   return (
     <>
       <div className="flex items-center py-4">
-        <Input placeholder="Search..."
-          value={(table.getColumn("playerName")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("playerName")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
+        <div className="flex justify-between items-center w-full">
+          <Input placeholder="Search..."
+            value={(table.getColumn("playerName")?.getFilterValue() as string) ?? ""}
+            onChange={(event) =>
+              table.getColumn("playerName")?.setFilterValue(event.target.value)
+            }
+            className="max-w-sm"
+          />
+          <Button
+            onClick={handleAddCard}
+            className="cursor-pointer"
+          >
+            <SquarePlus size={20} /> Add Card
+          </Button>
+        </div>
       </div>
       <div className="overflow-hidden rounded-md border">
         <Table>
@@ -67,7 +78,7 @@ export function DataTable<TData, TValue>({
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead key={header.id} className="text-primary cursor-pointer">
                       {header.isPlaceholder
                         ? null
                         : flexRender(

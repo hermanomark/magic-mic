@@ -25,6 +25,16 @@ export const getAllCards = async () => {
   }
 }
 
+export const getStats = async () => {
+  try {
+    const response = await api.get('/cards/stats');
+    return response.data;
+  } catch (error) {
+    const errorMessage = getErrorMessage(error, 'Failed to fetch stats.');
+    throw new Error(errorMessage);
+  }
+}
+
 export const getCardById = async (id: string) => {
   try {
     const response = await api.get(`/cards/${id}`);
