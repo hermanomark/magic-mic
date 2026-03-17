@@ -28,12 +28,14 @@ describe('cards api', () => {
       user: testUser._id
     }))
     const promiseArray = cardObjects.map(card => card.save())
-    await Promise.all(promiseArray)
+    const savedCards = await Promise.all(promiseArray)
 
-    // Update user with card references
-    const savedCards = await Card.find({})
-    testUser.cards = savedCards.map(card => card._id)
-    await testUser.save()
+    // Update user with card references using findByIdAndUpdate to avoid VersionError
+    testUser = await User.findByIdAndUpdate(
+      testUser._id,
+      { cards: savedCards.map(card => card._id) },
+      { new: true }
+    )
   })
 
   describe('GET /api/cards', () => {
@@ -53,6 +55,53 @@ describe('cards api', () => {
       const response = await api.get('/api/cards')
       const playerNames = response.body.map(r => r.playerName)
       assert(playerNames.includes('Mike Trout'))
+    })
+  })
+
+  describe('GET /api/cards/stats', () => {
+    test('stats are returned as json', async () => {
+      await api
+        .get('/api/cards/stats')
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
+    })
+
+    test('returns correct counts for initial cards', async () => {
+      const response = await api.get('/api/cards/stats')
+
+      assert.strictEqual(response.body.total, 2)
+      assert.strictEqual(response.body.forSale, 2)
+      assert.strictEqual(response.body.notForSale, 0)
+    })
+
+    test('returns correct counts after adding a not-for-sale card', async () => {
+      const newCard = new Card({
+        playerName: 'Babe Ruth',
+        teamName: 'New York Yankees',
+        series: 'Vintage',
+        yearReleased: 1933,
+        stock: 1,
+        price: 10000,
+        forSale: false,
+        user: testUser._id
+      })
+      await newCard.save()
+
+      const response = await api.get('/api/cards/stats')
+
+      assert.strictEqual(response.body.total, 3)
+      assert.strictEqual(response.body.forSale, 2)
+      assert.strictEqual(response.body.notForSale, 1)
+    })
+
+    test('returns zeros when no cards exist', async () => {
+      await Card.deleteMany({})
+
+      const response = await api.get('/api/cards/stats')
+
+      assert.strictEqual(response.body.total, 0)
+      assert.strictEqual(response.body.forSale, 0)
+      assert.strictEqual(response.body.notForSale, 0)
     })
   })
 
