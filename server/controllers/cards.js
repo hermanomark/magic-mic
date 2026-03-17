@@ -7,6 +7,24 @@ cardsRouter.get('/', async (req, res) => {
   res.json(cards)
 })
 
+cardsRouter.get('/stats', async (req, res) => {
+  const [result] = await Card.aggregate([
+    {
+      $facet: {
+        total: [{ $count: 'count' }],
+        forSale: [{ $match: { forSale: true } }, { $count: 'count' }],
+        notForSale: [{ $match: { forSale: false } }, { $count: 'count' }],
+      },
+    },
+  ])
+
+  res.json({
+    total: result.total[0]?.count ?? 0,
+    forSale: result.forSale[0]?.count ?? 0,
+    notForSale: result.notForSale[0]?.count ?? 0,
+  })
+})
+
 cardsRouter.get('/:id', async (req, res) => {
   const card = await Card.findById(req.params.id)
   if (card) {
