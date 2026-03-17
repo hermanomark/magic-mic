@@ -9,8 +9,8 @@ import {
   SelectGroup,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from "./ui/select"
+  SelectValue
+} from "./ui/Select";
 
 interface CardFormModalProps {
   isOpen: boolean;

@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import CardFormModal from "@/components/CardFormModal";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import TablePagination from "@/components/TablePagination";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -29,8 +28,6 @@ const AdminDashboard = () => {
   const [selectedCard, setSelectedCard] = useState<Card | null>(null);
   const [cardToDelete, setCardToDelete] = useState<string | null>(null);
   const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
-  const itemsPerPage = 12;
-  const [currentPage, setCurrentPage] = useState(1);
 
   const initializeCard: Card = {
     playerName: '',
@@ -50,10 +47,6 @@ const AdminDashboard = () => {
   const resetForm = () => {
     setFormData({ ...initializeCard });
     setSelectedCard(null);
-  };
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
   };
 
   const newCardMutation = useMutation({
@@ -160,11 +153,6 @@ const AdminDashboard = () => {
   const cards = resultCards.data || [];
   const user = resultUser.data || null;
 
-  const totalPages = Math.ceil(cards.length / itemsPerPage);
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentCards = cards.slice(indexOfFirstItem, indexOfLastItem);
-
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center">
@@ -194,13 +182,7 @@ const AdminDashboard = () => {
           </button>
         </div>
 
-        <DataTable columns={columns} data={currentCards} />
-
-        <TablePagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={handlePageChange}
-        />
+        <DataTable columns={columns} data={cards} />
       </div>
 
       <CardFormModal
