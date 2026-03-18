@@ -13,6 +13,10 @@ app.get('/', (req, res) => {
   res.send('This is the Magic Mic Cards API root endpoint.')
 })
 
+app.get('/ping', (req, res) => {
+  res.status(200).send('OK')
+})
+
 mongoose.connect(config.MONGODB_URI, { family: 4 })
 
 app.use(cors())
