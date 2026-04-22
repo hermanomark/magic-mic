@@ -90,7 +90,7 @@ cardsRouter.put('/:id', middleware.userExtractor, async (req, res) => {
   cardToUpdate.series = req.body.series || cardToUpdate.series
   cardToUpdate.yearReleased = req.body.yearReleased || cardToUpdate.yearReleased
   cardToUpdate.ebayUrl = req.body.ebayUrl || cardToUpdate.ebayUrl
-  cardToUpdate.imageUrl = req.body.imageUrl || cardToUpdate.imageUrl
+  cardToUpdate.imageUrl = req.body.imageUrl !== undefined ? req.body.imageUrl : cardToUpdate.imageUrl
   cardToUpdate.stock = req.body.stock !== undefined ? req.body.stock : cardToUpdate.stock
   cardToUpdate.price = req.body.price !== undefined ? req.body.price : cardToUpdate.price
   cardToUpdate.forSale = req.body.forSale !== undefined ? req.body.forSale : cardToUpdate.forSale

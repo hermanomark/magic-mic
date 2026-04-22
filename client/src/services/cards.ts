@@ -43,6 +43,7 @@ export const addNewCard = async (cardData: CardFormValues) => {
 }
 
 export const updateCard = async (cardData: CardType) => {
+  console.log('Updating card with data:', cardData);
   try {
     const response = await api.put<CardType>(`/cards/${cardData.id}`, cardData);
     return response.data;

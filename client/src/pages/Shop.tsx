@@ -85,7 +85,10 @@ const Shop = () => {
             className="w-full"
           >
             <Card className='py-2 pt-0 gap-2 overflow-hidden transition-all duration-300 h-full rounded-xl border-primary shadow-[-8px_8px_0px_0px_var(--color-primary)] hover:shadow-[-12px_12px_0px_0px_var(--color-primary)]  flex flex-col'>
-              <img src="/aaron-judge.png" alt={card.playerName} className="w-full h-full object-cover hover:scale-110 transition-transform duration-500" />
+              <img
+                src={card.imageUrl}
+                alt={card.playerName}
+                className="w-full h-full object-cover hover:scale-110 transition-transform duration-500" />
 
               <div className="px-4 py-2 flex flex-col grow">
                 <h2 className="text-md font-semibold text-primary mb-2">{card.playerName}</h2>

@@ -1,8 +1,11 @@
+import { useState, useEffect } from "react";
 import { X } from "lucide-react";
+import { toast } from "sonner";
 import { type CardType, type CardFormValues } from "@/types/Card";
 import { Button } from "./ui/Button";
 import { Label } from "./ui/Label";
 import { Input } from "./ui/Input";
+import { Spinner } from "./ui/Spinner";
 import {
   Select,
   SelectContent,
@@ -11,6 +14,7 @@ import {
   SelectTrigger,
   SelectValue
 } from "./ui/Select";
+import { uploadImage } from "@/services/upload";
 
 interface CardFormModalProps {
   isOpen: boolean;
@@ -22,6 +26,12 @@ interface CardFormModalProps {
 }
 
 const CardFormModal = ({ isOpen, onClose, onSubmit, card, formData, setForm }: CardFormModalProps) => {
+  const [isUploading, setIsUploading] = useState(false);
+  const [imgError, setImgError] = useState(false);
+
+  useEffect(() => {
+    setImgError(false);
+  }, [formData.imageUrl]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -41,6 +51,20 @@ const CardFormModal = ({ isOpen, onClose, onSubmit, card, formData, setForm }: C
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit(formData);
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setIsUploading(true);
+    try {
+      const url = await uploadImage(file);
+      setForm({ ...formData, imageUrl: url });
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Failed to upload image.');
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   if (!isOpen) return null;
@@ -112,6 +136,45 @@ const CardFormModal = ({ isOpen, onClose, onSubmit, card, formData, setForm }: C
               />
             </div>
             <div className="mb-4 md:col-span-2">
+              <Label className="block text-foreground font-semibold mb-2">Image Upload</Label>
+              <div className="flex items-center gap-3">
+                <Input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  disabled={isUploading}
+                  className="w-full cursor-pointer"
+                />
+                {isUploading && <Spinner />}
+              </div>
+              <div className="mt-2">
+                {formData.imageUrl && (
+                  <div className="flex items-start gap-2">
+                    {imgError ? (
+                      <div className="mt-2 h-32 w-24 rounded border border-border flex items-center justify-center bg-muted text-muted-foreground text-xs text-center p-2">
+                        No preview available
+                      </div>
+                    ) : (
+                      <img
+                        src={formData.imageUrl}
+                        alt="Card preview"
+                        className="h-32 w-auto rounded object-contain border border-border"
+                        onError={() => setImgError(true)}
+                      />
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => setForm({ ...formData, imageUrl: '' })}
+                      className="text-muted-foreground hover:text-destructive cursor-pointer"
+                      aria-label="Remove image"
+                    >
+                      <X size={16} />
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+            {/* <div className="mb-4 md:col-span-2 hidden">
               <Label className="block text-foreground font-semibold mb-2">Image URL</Label>
               <Input
                 type="text"
@@ -120,7 +183,7 @@ const CardFormModal = ({ isOpen, onClose, onSubmit, card, formData, setForm }: C
                 onChange={handleChange}
                 className="w-full"
               />
-            </div>
+            </div> */}
             <div className="mb-4">
               <Label className="block text-foreground font-semibold mb-2">Stock</Label>
               <Input
@@ -164,6 +227,7 @@ const CardFormModal = ({ isOpen, onClose, onSubmit, card, formData, setForm }: C
           <div className="flex gap-4 mt-6">
             <Button
               type="submit"
+              disabled={isUploading}
               className="bg-primary text-white font-semibold py-2 px-4 rounded-lg hover:bg-primary-dark transition-colors duration-300 cursor-pointer"
             >
               {card ? 'Update' : 'Add'} Card

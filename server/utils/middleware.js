@@ -62,6 +62,8 @@ const errorHandler = (error, req, res, next) => {
     return res.status(401).json({ error: 'Invalid token' })
   } else if (error.name === 'TokenExpiredError') {
     return res.status(401).json({ error: 'Token expired' })
+  } else if (error.name === 'MulterError' || error.message === 'Only image files are allowed') {
+    return res.status(400).json({ error: error.message })
   }
 
   next(error)

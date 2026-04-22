@@ -128,8 +128,7 @@ const Home = () => {
                 <Card className="overflow-hidden transition-all duration-300 h-full rounded-xl border-primary shadow-[-8px_8px_0px_0px_var(--color-primary)] hover:shadow-[-12px_12px_0px_0px_var(--color-primary)] pt-0">
                   <div className="aspect-3/4 overflow-hidden">
                     <img
-                      // src={card.imageUrl}
-                      src='/julio-rodriguez.png'
+                      src={card.imageUrl}
                       alt={card.playerName}
                       className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
                     />
@@ -207,8 +206,7 @@ const Home = () => {
                 <Card className="overflow-hidden transition-all duration-300 h-full rounded-xl border-primary shadow-[-8px_8px_0px_0px_var(--color-primary)] hover:shadow-[-12px_12px_0px_0px_var(--color-primary)] py-0">
                   <div className="overflow-hidden">
                     <img
-                      // src={card.imageUrl}
-                      src={'/juan-soto.jpg'}
+                      src={card.imageUrl}
                       alt={`Baseball card ${card.id}`}
                       className="w-full h-full object-cover hover:scale-110 transition-transform duration-500" />
                   </div>
