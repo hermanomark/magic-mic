@@ -8,14 +8,14 @@ import {
 } from "@/components/ui/DropdownMenu";
 import { Button } from "@/components/ui/Button";
 import { Trash2, SquarePen, ArrowUpDown, MoreHorizontal } from "lucide-react";
-import { type Card } from "@/types/Card";
+import { type CardType } from "@/types/Card";
 
 export interface CardColumnHandlers {
-  handleEditCard: (card: Card) => void;
+  handleEditCard: (card: CardType) => void;
   handleDeleteCard: (cardId: string) => void;
 }
 
-export function getCardColumns({ handleEditCard, handleDeleteCard }: CardColumnHandlers): ColumnDef<Card>[] {
+export function getCardColumns({ handleEditCard, handleDeleteCard }: CardColumnHandlers): ColumnDef<CardType>[] {
   return [
     {
       accessorKey: "playerName",
