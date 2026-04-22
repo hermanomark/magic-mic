@@ -6,20 +6,7 @@ import TablePagination from '@/components/TablePagination';
 import { Button } from '@/components/ui/Button';
 import { getAllCards } from '@/services/cards';
 import { useQuery } from '@tanstack/react-query';
-
-interface Card {
-  id: number;
-  playerName: string;
-  teamName: string;
-  series: string;
-  yearReleased: number;
-  ebayUrl: string;
-  imageUrl: string;
-  stock: number;
-  price: number;
-  forSale: boolean
-  user: string;
-}
+import { type CardType } from '@/types/Card';
 
 const Shop = () => {
   const itemsPerPage = 12;
@@ -57,7 +44,7 @@ const Shop = () => {
     refetchOnWindowFocus: false,
   });
 
-  const shopCards = resultCards.data ? resultCards.data.filter((card: Card) => card.forSale) : [];
+  const shopCards = resultCards.data ? resultCards.data.filter((card: CardType) => card.forSale) : [];
 
   const totalItems = shopCards.length;
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -91,7 +78,7 @@ const Shop = () => {
         key={pageKey}
         className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
       >
-        {currentItems.map((card: Card) => (
+        {currentItems.map((card: CardType) => (
           <motion.div
             key={card.id}
             variants={fadeInUp}

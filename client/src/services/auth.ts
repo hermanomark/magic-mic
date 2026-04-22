@@ -1,14 +1,10 @@
 import api from "./client";
 import { getErrorMessage } from "@/utils/errorHandler";
+import { type UserFormValues, type UserToken } from "@/types/User";
 
-interface User {
-  username: string;
-  password?: string;
-}
-
-export const authUser = async (userData: User) => {
+export const authUser = async (userData: UserFormValues) => {
   try {
-    const response = await api.post('/login', userData);
+    const response = await api.post<UserToken>('/login', userData);
     return response.data;
   } catch (error) {
     const errorMessage = getErrorMessage(error, 'Failed to login user.');

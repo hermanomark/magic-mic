@@ -1,23 +1,10 @@
 import api from './client';
 import { getErrorMessage } from '@/utils/errorHandler';
-
-interface Card {
-  id?: string;
-  playerName: string;
-  teamName: string;
-  series: string;
-  yearReleased: number;
-  ebayUrl: string;
-  imageUrl: string;
-  stock: number;
-  price: number;
-  forSale: boolean;
-  user: string;
-}
+import { type CardType, type CardFormValues, type CardStats } from '@/types/Card';
 
 export const getAllCards = async () => {
   try {
-    const response = await api.get('/cards');
+    const response = await api.get<CardType[]>('/cards');
     return response.data;
   } catch (error) {
     const errorMessage = getErrorMessage(error, 'Failed to fetch cards.');
@@ -27,7 +14,7 @@ export const getAllCards = async () => {
 
 export const getStats = async () => {
   try {
-    const response = await api.get('/cards/stats');
+    const response = await api.get<CardStats>('/cards/stats');
     return response.data;
   } catch (error) {
     const errorMessage = getErrorMessage(error, 'Failed to fetch stats.');
@@ -37,7 +24,7 @@ export const getStats = async () => {
 
 export const getCardById = async (id: string) => {
   try {
-    const response = await api.get(`/cards/${id}`);
+    const response = await api.get<CardType>(`/cards/${id}`);
     return response.data;
   } catch (error) {
     const errorMessage = getErrorMessage(error, 'Failed to fetch the card.');
@@ -45,9 +32,9 @@ export const getCardById = async (id: string) => {
   }
 }
 
-export const addNewCard = async (cardData: Card) => {
+export const addNewCard = async (cardData: CardFormValues) => {
   try {
-    const response = await api.post('/cards', cardData);
+    const response = await api.post<CardType>('/cards', cardData);
     return response.data;
   } catch (error) {
     const errorMessage = getErrorMessage(error, 'Failed to add new card.');
@@ -55,9 +42,9 @@ export const addNewCard = async (cardData: Card) => {
   }
 }
 
-export const updateCard = async (cardData: Card) => {
+export const updateCard = async (cardData: CardType) => {
   try {
-    const response = await api.put(`/cards/${cardData.id}`, cardData);
+    const response = await api.put<CardType>(`/cards/${cardData.id}`, cardData);
     return response.data;
   } catch (error) {
     const errorMessage = getErrorMessage(error, 'Failed to update the card.');
@@ -67,7 +54,7 @@ export const updateCard = async (cardData: Card) => {
 
 export const deleteCard = async (id: string) => {
   try {
-    const response = await api.delete(`/cards/${id}`);
+    const response = await api.delete<CardType>(`/cards/${id}`);
     return response.data;
   } catch (error) {
     const errorMessage = getErrorMessage(error, 'Failed to delete the card.');

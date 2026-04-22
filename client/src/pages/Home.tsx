@@ -5,23 +5,9 @@ import { ArrowRight, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { getAllCards } from '@/services/cards';
 import { useQuery } from '@tanstack/react-query';
-
-interface Card {
-  id: number;
-  playerName: string;
-  teamName: string;
-  series: string;
-  yearReleased: number;
-  ebayUrl: string;
-  imageUrl: string;
-  stock: number;
-  price: number;
-  forSale: boolean;
-  user: string;
-}
+import { type CardType } from '@/types/Card';
 
 const Home = () => {
-  // Animation variants
   const fadeInUp = {
     initial: { opacity: 0, y: 60 },
     animate: { opacity: 1, y: 0 },
@@ -46,8 +32,8 @@ const Home = () => {
     refetchOnWindowFocus: false,
   })
 
-  const featuredCards = resultCards.data ? resultCards.data.filter((card: Card) => card.forSale).slice(0, 3) : [];
-  const collectionCards = resultCards.data ? resultCards.data.filter((card: Card) => !card.forSale) : [];
+  const featuredCards = resultCards.data ? resultCards.data.filter((card: CardType) => card.forSale).slice(0, 3) : [];
+  const collectionCards = resultCards.data ? resultCards.data.filter((card: CardType) => !card.forSale) : [];
 
   return (
     <>
@@ -137,7 +123,7 @@ const Home = () => {
             variants={staggerContainer}
             className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12"
           >
-            {featuredCards.map((card: Card) => (
+            {featuredCards.map((card: CardType) => (
               <motion.div key={card.id} variants={fadeInUp}>
                 <Card className="overflow-hidden transition-all duration-300 h-full rounded-xl border-primary shadow-[-8px_8px_0px_0px_var(--color-primary)] hover:shadow-[-12px_12px_0px_0px_var(--color-primary)] pt-0">
                   <div className="aspect-3/4 overflow-hidden">
@@ -212,7 +198,7 @@ const Home = () => {
             variants={staggerContainer}
             className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12"
           >
-            {collectionCards.map((card: Card) => (
+            {collectionCards.map((card: CardType) => (
               <motion.div
                 key={card.id}
                 variants={fadeInUp}

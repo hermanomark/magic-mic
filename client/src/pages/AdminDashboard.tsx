@@ -18,7 +18,7 @@ import {
 import { DataTable } from "@/components/ui/DataTable";
 import { LogOut } from "lucide-react";
 import { getCardColumns } from "@/components/AdminDashboardColumns";
-import { type Card } from "@/types/Card";
+import { type CardFormValues, type CardType } from "@/types/Card";
 import Stats from "@/components/Stats";
 
 const AdminDashboard = () => {
@@ -26,11 +26,11 @@ const AdminDashboard = () => {
   const queryClient = useQueryClient();
   const username = localStorage.getItem('authUsername') || '';
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedCard, setSelectedCard] = useState<Card | null>(null);
+  const [selectedCard, setSelectedCard] = useState<CardType | null>(null);
   const [cardToDelete, setCardToDelete] = useState<string | null>(null);
   const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
 
-  const initializeCard: Card = {
+  const initializeCard: CardFormValues = {
     playerName: '',
     teamName: '',
     series: '',
@@ -43,7 +43,7 @@ const AdminDashboard = () => {
     user: username
   };
 
-  const [formData, setFormData] = useState<Card>({ ...initializeCard });
+  const [formData, setFormData] = useState<CardFormValues>({ ...initializeCard });
 
   const resetForm = () => {
     setFormData({ ...initializeCard });
@@ -53,8 +53,9 @@ const AdminDashboard = () => {
   const newCardMutation = useMutation({
     mutationFn: addNewCard,
     onSuccess: (newCard) => {
-      const cards = queryClient.getQueryData<Card[]>(['cards']) || [];
+      const cards = queryClient.getQueryData<CardType[]>(['cards']) || [];
       queryClient.setQueryData(['cards'], [...cards, newCard]);
+      queryClient.invalidateQueries({ queryKey: ['stats'] });
       toast.success(`Card "${newCard.playerName}" added successfully.`);
     },
     onError(error: string) {
@@ -65,10 +66,11 @@ const AdminDashboard = () => {
   const updateCardMutation = useMutation({
     mutationFn: updateCard,
     onSuccess: (updatedCard) => {
-      queryClient.setQueryData<Card[]>(['cards'], (oldCards) => {
+      queryClient.setQueryData<CardType[]>(['cards'], (oldCards) => {
         if (!oldCards) return [];
         return oldCards.map(card => card.id === updatedCard.id ? updatedCard : card);
       });
+      queryClient.invalidateQueries({ queryKey: ['stats'] });
       toast.success(`Card "${updatedCard.playerName}" updated successfully.`);
     },
     onError(error: string) {
@@ -79,10 +81,11 @@ const AdminDashboard = () => {
   const deleteCardMutation = useMutation({
     mutationFn: deleteCard,
     onSuccess: (_data, cardId) => {
-      queryClient.setQueryData<Card[]>(['cards'], (oldCards) => {
+      queryClient.setQueryData<CardType[]>(['cards'], (oldCards) => {
         if (!oldCards) return [];
         return oldCards.filter(card => card.id !== cardId);
       });
+      queryClient.invalidateQueries({ queryKey: ['stats'] });
       toast.success("Card deleted successfully.");
     },
     onError(error: string) {
@@ -95,13 +98,13 @@ const AdminDashboard = () => {
     setIsModalOpen(true);
   };
 
-  const handleEditCard = useCallback((card: Card) => {
+  const handleEditCard = useCallback((card: CardType) => {
     setSelectedCard(card);
     setFormData(card);
     setIsModalOpen(true);
   }, []);
 
-  const handleModalSubmit = async (cardData: Card) => {
+  const handleModalSubmit = async (cardData: CardFormValues) => {
     if (selectedCard && selectedCard.id) {
       updateCardMutation.mutate({ ...cardData, id: selectedCard.id });
     } else {
@@ -178,11 +181,13 @@ const AdminDashboard = () => {
       </div>
 
       <p>Welcome {user?.name}. Here you can manage the application.</p>
-      {stats && <Stats stats={stats} />}
+      {stats && <Stats
+        total={stats.total}
+        forSale={stats.forSale}
+        notForSale={stats.notForSale}
+      />}
 
       <div className="mt-6">
-
-
         <DataTable columns={columns} data={cards} handleAddCard={handleAddCard} />
       </div>
 

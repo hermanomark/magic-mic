@@ -1,14 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card"
+import { type CardStats } from "@/types/Card"
 
-interface StatsProps {
-  stats: {
-    total: number;
-    forSale: number;
-    notForSale: number;
-  };
-}
-
-const Stats = ({ stats }: StatsProps) => {
+const Stats = ({ total, forSale, notForSale }: CardStats) => {
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 mt-6">
       <Card>
@@ -16,7 +9,7 @@ const Stats = ({ stats }: StatsProps) => {
           <CardTitle className="text-sm font-medium text-muted-foreground">Total</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-3xl font-bold">{stats.total}</p>
+          <p className="text-3xl font-bold">{total}</p>
         </CardContent>
       </Card>
       <Card>
@@ -24,7 +17,7 @@ const Stats = ({ stats }: StatsProps) => {
           <CardTitle className="text-sm font-medium text-muted-foreground">For Sale</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-3xl font-bold">{stats.forSale}</p>
+          <p className="text-3xl font-bold">{forSale}</p>
         </CardContent>
       </Card>
       <Card>
@@ -32,7 +25,7 @@ const Stats = ({ stats }: StatsProps) => {
           <CardTitle className="text-sm font-medium text-muted-foreground">Collections</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-3xl font-bold">{stats.notForSale}</p>
+          <p className="text-3xl font-bold">{notForSale}</p>
         </CardContent>
       </Card>
     </div>

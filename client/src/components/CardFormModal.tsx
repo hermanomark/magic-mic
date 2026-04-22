@@ -1,5 +1,5 @@
 import { X } from "lucide-react";
-import { type Card } from "@/types/Card";
+import { type CardType, type CardFormValues } from "@/types/Card";
 import { Button } from "./ui/Button";
 import { Label } from "./ui/Label";
 import { Input } from "./ui/Input";
@@ -15,10 +15,10 @@ import {
 interface CardFormModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (cardData: Card) => void;
-  card?: Card | null;
-  formData: Card;
-  setForm: (data: Card) => void;
+  onSubmit: (cardData: CardFormValues) => void;
+  card?: CardType | null;
+  formData: CardFormValues;
+  setForm: (data: CardFormValues) => void;
 }
 
 const CardFormModal = ({ isOpen, onClose, onSubmit, card, formData, setForm }: CardFormModalProps) => {

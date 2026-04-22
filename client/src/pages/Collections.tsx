@@ -4,26 +4,12 @@ import { useQuery } from '@tanstack/react-query'
 import { Card } from '@/components/ui/Card';
 import { motion } from 'framer-motion';
 import TablePagination from '@/components/TablePagination';
-
-interface Card {
-  id: number;
-  playerName: string;
-  teamName: string;
-  series: string;
-  yearReleased: number;
-  ebayUrl: string;
-  imageUrl: string;
-  stock: number;
-  price: number;
-  forSale: boolean
-  user: string;
-}
+import { type CardType } from '@/types/Card';
 
 const Collections = () => {
   const itemsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
 
-  // Animation variants
   const fadeInUp = {
     initial: { opacity: 0, y: 60 },
     animate: { opacity: 1, y: 0 },
@@ -49,9 +35,9 @@ const Collections = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const collectionCards = resultCards.data ? resultCards.data.filter((card: Card) => !card.forSale) : [];
+  const collectionCards = resultCards.data ? resultCards.data.filter((card: CardType) => !card.forSale) : [];
 
-  const totalItems = collectionCards.length; // Total number of collectible items
+  const totalItems = collectionCards.length;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = collectionCards.slice(indexOfFirstItem, indexOfLastItem);
@@ -83,7 +69,7 @@ const Collections = () => {
         key={pageKey}
         className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6"
       >
-        {currentItems.map((card: Card) => (
+        {currentItems.map((card: CardType) => (
           <motion.div
             key={card.id}
             variants={fadeInUp}
