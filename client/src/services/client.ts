@@ -22,9 +22,14 @@ api.interceptors.response.use(
   (error) => {
     const isLoginRequest = error.config?.url?.includes('/login');
     if (error.response?.status === 401 && !isLoginRequest) {
-      localStorage.removeItem('authToken');
-      localStorage.removeItem('authUsername');
-      window.location.href = '/login';
+      const message: string = error.response?.data?.error ?? '';
+      const isOwnershipError = message.includes('only the creator');
+
+      if (!isOwnershipError) {
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('authUsername');
+        window.location.href = '/login';
+      }
     }
     return Promise.reject(error);
   }

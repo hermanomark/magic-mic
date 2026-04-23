@@ -58,8 +58,8 @@ const AdminDashboard = () => {
       queryClient.invalidateQueries({ queryKey: ['stats'] });
       toast.success(`Card "${newCard.playerName}" added successfully.`);
     },
-    onError(error: string) {
-      toast.error(error || "Failed to add new card.");
+    onError(error: Error) {
+      toast.error(error.message || "Failed to add new card.");
     }
   });
 
@@ -73,8 +73,8 @@ const AdminDashboard = () => {
       queryClient.invalidateQueries({ queryKey: ['stats'] });
       toast.success(`Card "${updatedCard.playerName}" updated successfully.`);
     },
-    onError(error: string) {
-      toast.error(error || "Failed to update the card.");
+    onError(error: Error) {
+      toast.error(error.message || "Failed to update the card.");
     }
   });
 
@@ -88,8 +88,8 @@ const AdminDashboard = () => {
       queryClient.invalidateQueries({ queryKey: ['stats'] });
       toast.success("Card deleted successfully.");
     },
-    onError(error: string) {
-      toast.error(error || "Failed to delete the card.");
+    onError(error: Error) {
+      toast.error(error.message || "Failed to delete the card.");
     }
   });
 
