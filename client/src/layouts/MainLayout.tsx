@@ -33,7 +33,7 @@ const MainLayout = () => {
       <Navigation />
       <Toaster />
 
-      <main className="flex-1 w-full min-h-screen">
+      <main className="flex-1 w-full">
         <div className="w-full mx-auto py-4 sm:py-8 lg:py-12">
           <Outlet />
         </div>
