@@ -57,7 +57,7 @@ const Home = () => {
               <h1 className="text-5xl md:text-7xl mb-6 text-primary pb-4" style={{ fontFamily: "'Bungee Shade', sans-serif", letterSpacing: '0.05em' }}>
                 MAGIC MIC
               </h1>
-              <div className="relative rounded-full overflow-hidden shadow-2xl mx-auto flex w-48 h-48 md:w-64 md:h-64 border-4 border-[#005A9C]">
+              <div className="relative rounded-xl overflow-hidden shadow-2xl mx-auto flex w-48 h-48 md:w-64 md:h-64 border-6 sm:border-10 border-[#005A9C]">
                 <img
                   src="/magic-mic-small.png"
                   alt="Magic Mic - Baseball Card Collector"
