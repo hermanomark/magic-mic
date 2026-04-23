@@ -4,7 +4,13 @@ Magic Mic's Baseball Card Collection & Store.
 
 ## Live demo
 
-https://magic-mic.vercel.app
+Home: https://magic-mic.vercel.app
+Admin: https://magic-mic.vercel.app/login
+
+Admin credentials for testing:
+
+- Username: `admin`
+- Password: `password1236`
 
 ## Built with
 
